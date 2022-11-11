@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from 'react'
 import { Icon } from "native-base";
 import { G, Path } from "react-native-svg";
 const NativeBaseIcon = () => {
