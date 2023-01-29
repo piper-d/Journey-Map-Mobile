@@ -13,11 +13,15 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSCameraUsageDescription": "This app uses the camera to scan barcodes on event tickets."
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyBuJbANgt8zBfHP1x4Kx7CqYRxyYgxFql0"
+      }
     },
     "android": {
       "adaptiveIcon": {
