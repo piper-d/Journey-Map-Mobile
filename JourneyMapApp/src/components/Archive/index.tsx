@@ -18,8 +18,7 @@ export function ArchiveComponent({ date, duration, mileage, speed }: TripData) {
             style={styles.map}
             mapType='hybrid'
             provider={PROVIDER_GOOGLE}
-            onPress={() => {}}
-            onPanDrag={() => {}}
+            scrollEnabled={false}
 
             // region={{
             //   latitude: initialLocation?.coords?.latitude!,
@@ -29,9 +28,9 @@ export function ArchiveComponent({ date, duration, mileage, speed }: TripData) {
             // }}
           />
         </View>
-        <Text style={styles.statistics}>Duration: </Text>
-        <Text style={styles.statistics}>Mileage: </Text>
-        <Text style={styles.statistics}>Speed: </Text>
+        <Text style={styles.statistics} children={`Duration: ${duration}`} />
+        <Text style={styles.statistics} children={`Mileage: ${mileage}`} />
+        <Text style={styles.statistics} children={`Speed: ${speed}`} />
       </>
     </TouchableOpacity>
   );

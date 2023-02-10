@@ -15,24 +15,24 @@ export type TripData = {
 const fakeData: TripData[] = [
   {
     id: 0,
-    date: 'a',
-    duration: 'b',
-    mileage: 'c',
-    speed: 'd',
+    date: '',
+    duration: '',
+    mileage: '',
+    speed: '',
   },
   {
     id: 1,
-    date: 'e',
-    duration: 'f',
-    mileage: 'g',
-    speed: 'h',
+    date: '',
+    duration: '',
+    mileage: '',
+    speed: '',
   },
   {
     id: 2,
-    date: 'i',
-    duration: 'j',
-    mileage: 'k',
-    speed: 'l',
+    date: '',
+    duration: '',
+    mileage: '',
+    speed: '',
   },
 ];
 
