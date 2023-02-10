@@ -3,11 +3,11 @@ import { LocationObject } from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Button, SafeAreaView } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { Props } from '../../../App';
-import { Tracking } from '../../components/Tracking';
+import { Tracking } from '../../components/Create/Tracking';
 import { styles } from './styles';
+import { TabProps } from '../../routes';
 
-export function CreateView({ route, navigation }: Props) {
+export function CreateView({ route, navigation }: TabProps) {
   const [initialLocation, setInitialLocation] = useState<LocationObject>();
   const [errorMsg, setErrorMsg] = useState<string>();
   const [isTracking, setIsTracking] = useState<boolean>(false);

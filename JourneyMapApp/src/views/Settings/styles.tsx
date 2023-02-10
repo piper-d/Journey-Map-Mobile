@@ -7,34 +7,27 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#212531',
   },
-  map: {
+  image: {
+    flex: 1,
     width: '100%',
-    height: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  input: {
+  topButtonView: {
+    height: 500,
+  },
+  bottomButtonView: {
     height: 50,
-    width: 250,
-    margin: 10,
-    backgroundColor: 'white',
-    borderRadius: 10,
-    paddingLeft: 10,
   },
   button: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 250,
+    width: 300,
     height: 50,
     margin: 12,
     borderRadius: 6,
     elevation: 3,
     backgroundColor: '#6A71E6',
-  },
-  image: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   text: {
     fontSize: 21,
