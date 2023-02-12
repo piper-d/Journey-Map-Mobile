@@ -30,40 +30,38 @@ export function CreateView({ route, navigation }: TabProps) {
   }, []);
 
   return (
-    <>
-      <SafeAreaView style={styles.container}>
-        {!isTracking && (
-          <>
-            <MapView
-              style={styles.map}
-              showsUserLocation
-              mapType='hybrid'
-              showsScale
-              provider={PROVIDER_GOOGLE}
-              showsMyLocationButton
-              region={{
-                latitude: initialLocation?.coords?.latitude!,
-                longitude: initialLocation?.coords?.longitude!,
-                latitudeDelta: 0.003,
-                longitudeDelta: 0.003,
-              }}
-            />
-            <View style={styles.buttonView}>
-              <TouchableOpacity
-                style={styles.button}
-                activeOpacity={0.9}
-                onPress={() => setIsTracking(true)}
-              >
-                <MaterialCommunityIcons name='plus' size={48} />
-              </TouchableOpacity>
-            </View>
-          </>
-        )}
+    <SafeAreaView style={styles.container}>
+      {!isTracking && (
+        <>
+          <MapView
+            style={styles.map}
+            showsUserLocation
+            mapType='hybrid'
+            showsScale
+            provider={PROVIDER_GOOGLE}
+            showsMyLocationButton
+            region={{
+              latitude: initialLocation?.coords?.latitude!,
+              longitude: initialLocation?.coords?.longitude!,
+              latitudeDelta: 0.003,
+              longitudeDelta: 0.003,
+            }}
+          />
+          <View style={styles.buttonView}>
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={0.9}
+              onPress={() => setIsTracking(true)}
+            >
+              <MaterialCommunityIcons name='plus' size={48} />
+            </TouchableOpacity>
+          </View>
+        </>
+      )}
 
-        {isTracking && (
-          <Tracking initialLocation={initialLocation!} setIsTracking={() => setIsTracking(false)} />
-        )}
-      </SafeAreaView>
-    </>
+      {isTracking && (
+        <Tracking initialLocation={initialLocation!} setIsTracking={() => setIsTracking(false)} />
+      )}
+    </SafeAreaView>
   );
 }
