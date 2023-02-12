@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#212531',
   },
-
   input: {
     height: 50,
     width: 250,
