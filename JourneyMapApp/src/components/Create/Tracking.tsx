@@ -1,26 +1,42 @@
 import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
+import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, SafeAreaView, Text } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { styles } from './styles';
+import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
+import { useTrips } from '../../api/getTrips';
 
 export type ITrackingObj = {
-  currLocation?: LocationObject;
-  locationArray?: LocationObject[];
+  currLocation: LocationObject;
+  locationArray: LocationObject[];
 };
 
-type ITracker = {
+export function Tracking({
+  initialLocation,
+  setIsTracking,
+}: {
   initialLocation: LocationObject;
   setIsTracking: () => void;
-};
-
-export function Tracking({ initialLocation, setIsTracking }: ITracker) {
-  const [location, setLocation] = useState<ITrackingObj>({ currLocation: initialLocation });
+}) {
+  const [location, setLocation] = useState<ITrackingObj>({
+    currLocation: initialLocation,
+    locationArray: [initialLocation],
+  });
   const [watcher, setWatcher] = useState<Location.LocationSubscription>();
+  const [duration, setDuration] = useState(0);
+  const [distance, setDistance] = useState(0);
+
+  const { getAllTrips, getTrip } = useTrips();
+
+  const { options, convertToMinutesPerMile, getPolylineCoords } = getTrackingFunction(
+    location,
+    distance,
+    setDistance
+  );
 
   useEffect(() => {
-    const options = { enableHighAccuracy: true, timeInterval: 1000, distanceInterval: 1 };
     Location.watchPositionAsync(options, (currentLocation) => {
       console.log({ currentLocation });
       setLocation((prevLocation) => ({
@@ -34,10 +50,13 @@ export function Tracking({ initialLocation, setIsTracking }: ITracker) {
       .catch((err) => {
         console.log(err);
       });
+
+    const durationTimer = setInterval(() => setDuration((prevDuration) => prevDuration + 1), 1000);
+
+    return () => {
+      clearTimeout(durationTimer);
+    };
   }, []);
-
-  console.log(location.locationArray?.length ?? 0);
-
   const stopTracking = useCallback(() => {
     watcher?.remove();
 
@@ -52,6 +71,7 @@ export function Tracking({ initialLocation, setIsTracking }: ITracker) {
         showsMyLocationButton
         mapType='hybrid'
         provider={PROVIDER_GOOGLE}
+        userLocationUpdateInterval={5000}
         // scrollEnabled={false}
         region={{
           latitude: location?.currLocation?.coords?.latitude!,
@@ -59,14 +79,16 @@ export function Tracking({ initialLocation, setIsTracking }: ITracker) {
           latitudeDelta: 0.005,
           longitudeDelta: 0.005,
         }}
-      />
-      <Text>
-        {location.currLocation?.coords.latitude ?? 'None'},{' '}
-        {location.currLocation?.coords.longitude ?? 'None'}{' '}
-      </Text>
+      >
+        <Polyline coordinates={getPolylineCoords()} strokeWidth={5} strokeColor='white' />
+      </MapView>
 
-      <Text>{location.locationArray?.length ?? 0}</Text>
+      <Text>{`${distance} Miles`}</Text>
+      <Text>{`${convertToMinutesPerMile()} MPH`}</Text>
+      <Text>{`${moment.utc(duration * 1000).format('HH:mm:ss')} Duration`}</Text>
       <Button title='STOP' onPress={() => stopTracking()} />
+      <Button title='GET MEEE' onPress={() => getAllTrips()} />
+      <Button title='GET 1' onPress={() => getTrip()} />
     </SafeAreaView>
   );
 }

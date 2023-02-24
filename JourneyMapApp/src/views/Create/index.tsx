@@ -12,6 +12,7 @@ export function CreateView({ route, navigation }: TabProps) {
   const [initialLocation, setInitialLocation] = useState<LocationObject>();
   const [errorMsg, setErrorMsg] = useState<string>();
   const [isTracking, setIsTracking] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     async function checkStatus() {
@@ -40,6 +41,7 @@ export function CreateView({ route, navigation }: TabProps) {
             showsScale
             provider={PROVIDER_GOOGLE}
             showsMyLocationButton
+            onMapLoaded={() => setIsLoading(false)}
             region={{
               latitude: initialLocation?.coords?.latitude!,
               longitude: initialLocation?.coords?.longitude!,
@@ -52,6 +54,7 @@ export function CreateView({ route, navigation }: TabProps) {
               style={styles.button}
               activeOpacity={0.9}
               onPress={() => setIsTracking(true)}
+              disabled={isLoading}
             >
               <MaterialCommunityIcons name='plus' size={48} />
             </TouchableOpacity>
