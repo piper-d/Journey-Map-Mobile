@@ -2,8 +2,8 @@ import 'dotenv/config';
 
 export default {
   expo: {
-    name: 'JourneyMapApp',
-    slug: 'JourneyMapApp',
+    name: 'Journey-Map-Mobile',
+    slug: 'Journey-Map-Mobile',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
@@ -32,7 +32,7 @@ export default {
       favicon: './assets/favicon.png',
     },
     extra: {
-      apikey: process.env.apiKey,
+      apiKey: process.env.apiKey,
       authDomain: process.env.authDomain,
       projectId: process.env.projectId,
       storageBucket: process.env.storageBucket,

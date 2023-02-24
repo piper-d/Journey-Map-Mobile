@@ -7,7 +7,7 @@ import { initializeAuth, getReactNativePersistence } from 'firebase/auth/react-n
 
 //Initialize Firebase
 const firebaseConfig = {
-  apiKey: Constants.expoConfig?.extra?.apikey,
+  apiKey: Constants.expoConfig?.extra?.apiKey,
   authDomain: Constants.expoConfig?.extra?.authDomain,
   projectId: Constants.expoConfig?.extra?.projectId,
   storageBucket: Constants.expoConfig?.extra?.storageBucket,
