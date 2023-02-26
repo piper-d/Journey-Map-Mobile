@@ -8,6 +8,7 @@ import { CreateView } from '../views/Create';
 import { SettingsView } from '../views/Settings';
 import { SignIn } from '../views/Auth/SignIn';
 import { SignUp } from '../views/Auth/SignUp';
+import { auth } from '../../config/firebase';
 
 export type RootTabParamList = {
   Create: undefined;
@@ -37,9 +38,7 @@ export type IUser = {
 };
 
 export function Routes() {
-  const [authorizedUser, setAuthorizedUser] = useState<any>(
-    false || AsyncStorage.getItem('accessToken')
-  );
+  const [authorizedUser, setAuthorizedUser] = useState<boolean>(auth.currentUser !== null);
 
   return (
     <>

@@ -6,7 +6,7 @@ import { Button, SafeAreaView, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { styles } from './styles';
 import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
-import { useTrips } from '../../api/getTrips';
+import { useTrips } from '../../api/Trips';
 
 export type ITrackingObj = {
   currLocation: LocationObject;
@@ -28,17 +28,14 @@ export function Tracking({
   const [duration, setDuration] = useState(0);
   const [distance, setDistance] = useState(0);
 
-  const { getAllTrips, getTrip } = useTrips();
+  const { getAllTrips, getTrip, createTrip } = useTrips();
 
-  const { options, convertToMinutesPerMile, getPolylineCoords } = getTrackingFunction(
-    location,
-    distance,
-    setDistance
-  );
+  const { options, getCurentSpeed, getAverageSpeed, getSimplifiedCoords, formatData } =
+    getTrackingFunction(location, distance, duration, setDistance);
 
   useEffect(() => {
     Location.watchPositionAsync(options, (currentLocation) => {
-      console.log({ currentLocation });
+      // console.log({ currentLocation });
       setLocation((prevLocation) => ({
         currLocation: currentLocation,
         locationArray: [...(prevLocation?.locationArray ?? []), currentLocation],
@@ -61,6 +58,8 @@ export function Tracking({
     watcher?.remove();
 
     setIsTracking();
+
+    createTrip(formatData());
   }, [watcher, setIsTracking]);
 
   return (
@@ -80,12 +79,14 @@ export function Tracking({
           longitudeDelta: 0.005,
         }}
       >
-        <Polyline coordinates={getPolylineCoords()} strokeWidth={5} strokeColor='white' />
+        <Polyline coordinates={getSimplifiedCoords()} strokeWidth={5} strokeColor='white' />
       </MapView>
 
-      <Text>{`${distance} Miles`}</Text>
-      <Text>{`${convertToMinutesPerMile()} MPH`}</Text>
-      <Text>{`${moment.utc(duration * 1000).format('HH:mm:ss')} Duration`}</Text>
+      <Text>{`Distance: ${distance} Miles`}</Text>
+      <Text>{`Current Speed: ${getCurentSpeed()} MPH`}</Text>
+      <Text>{`Average Speed: ${getAverageSpeed()} MPH`}</Text>
+
+      <Text>{`Duration: ${moment.utc(duration * 1000).format('HH:mm:ss')}`}</Text>
       <Button title='STOP' onPress={() => stopTracking()} />
       <Button title='GET MEEE' onPress={() => getAllTrips()} />
       <Button title='GET 1' onPress={() => getTrip()} />

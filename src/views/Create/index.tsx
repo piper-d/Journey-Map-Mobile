@@ -3,7 +3,7 @@ import { LocationObject } from 'expo-location';
 import React, { useEffect, useState } from 'react';
 import { Button, Pressable, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { Tracking } from '../../components/Create/Tracking';
+import { Tracking } from '../../components/Create';
 import { styles } from './styles';
 import { TabProps } from '../../routes';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';

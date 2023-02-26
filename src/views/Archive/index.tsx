@@ -1,8 +1,9 @@
-import React from 'react';
-import { ImageBackground, SafeAreaView, FlatList, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ImageBackground, SafeAreaView, FlatList, View, Text } from 'react-native';
 import { TabProps } from '../../routes';
 import { styles } from './styles';
 import { ArchiveComponent } from '../../components/Archive';
+import { useTrips } from '../../api/Trips';
 
 export type TripData = {
   id: number;
@@ -38,6 +39,21 @@ const fakeData: TripData[] = [
 
 export function ArchiveView({ route, navigation }: TabProps) {
   const image = require('../../.././assets/topographic.png');
+
+  const [items, setItems] = useState<any>();
+  const { isLoading, getAllTrips } = useTrips();
+
+  useEffect(() => {
+    getAllTrips().then((x) => setItems(x));
+  }, []);
+  if (isLoading)
+    return (
+      <View>
+        <Text>LOADING</Text>
+      </View>
+    );
+
+  console.log(items);
 
   return (
     <SafeAreaView style={styles.container}>

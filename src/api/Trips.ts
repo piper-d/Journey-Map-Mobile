@@ -1,17 +1,26 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../../config/axios';
+import { TripData } from '../hooks/useTrackingFunctions';
+import { useState } from 'react';
 
-// eminmammadzada.b@gmail.com
 export const useTrips = () => {
-  const createTrip = async () => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const createTrip = async (data: TripData) => {
     try {
       const token = await AsyncStorage.getItem('accessToken');
-      const response = await axios.post(`/trips`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      console.log(token);
+      const response = await axios.post(
+        `/trips`,
+        { data },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log(response.data);
+      console.log(response.statusText);
       console.log(response.status);
       console.log(Object.entries(response.data).length);
     } catch (error) {
@@ -21,43 +30,40 @@ export const useTrips = () => {
   };
 
   const getAllTrips = async () => {
+    const token = await AsyncStorage.getItem('accessToken');
+
     try {
-      const token = await AsyncStorage.getItem('accessToken');
       const response = await axios.get(`/trips`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
-      console.log(response.status);
-      console.log(Object.entries(response.data));
-      console.log(Object.entries(response.data).length);
+      setIsLoading(false);
+      return response.data;
     } catch (error) {
       console.log('error');
       console.log(error);
     }
   };
 
-  const getTrip = async () => {
-    const id = 'wbZNeoXsyHSIbETgmapy';
+  const getTrip = async (id: string) => {
+    const tempId = 'wbZNeoXsyHSIbETgmapy';
     try {
       const token = await AsyncStorage.getItem('accessToken');
-      const response = await axios.get(`/trips/${id}`, {
+      const response = await axios.get(`/trips/${tempId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          id: id,
+          id: tempId,
         },
       });
-      console.log(response.data);
-      console.log(response.status);
-      console.log(response.statusText);
-      console.log(Object.entries(response.data));
+      return response.data;
     } catch (error) {
       console.log('error');
       console.log(error);
     }
   };
-  return { getAllTrips, getTrip };
+
+  return { isLoading, getAllTrips, getTrip, createTrip };
 };
