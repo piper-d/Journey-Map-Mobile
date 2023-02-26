@@ -4,6 +4,7 @@ import { TabProps } from '../../routes';
 import { styles } from './styles';
 import { ArchiveComponent } from '../../components/Archive';
 import { useTrips } from '../../api/Trips';
+import { useIsFocused } from '@react-navigation/native';
 
 export type TripData = {
   id: number;
@@ -43,9 +44,14 @@ export function ArchiveView({ route, navigation }: TabProps) {
   const [items, setItems] = useState<any>();
   const { isLoading, getAllTrips } = useTrips();
 
+  const isFocused = useIsFocused();
+  console.log(isFocused);
+
   useEffect(() => {
-    getAllTrips().then((x) => setItems(x));
-  }, []);
+    if (isFocused) {
+      getAllTrips().then((x) => setItems(x));
+    }
+  }, [isFocused]);
   if (isLoading)
     return (
       <View>
@@ -53,7 +59,7 @@ export function ArchiveView({ route, navigation }: TabProps) {
       </View>
     );
 
-  console.log(items);
+  // console.log(items);
 
   return (
     <SafeAreaView style={styles.container}>

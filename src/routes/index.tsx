@@ -39,6 +39,7 @@ export type IUser = {
 
 export function Routes() {
   const [authorizedUser, setAuthorizedUser] = useState<boolean>(auth.currentUser !== null);
+  console.log(auth.currentUser);
 
   return (
     <>
