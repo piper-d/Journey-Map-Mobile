@@ -1,14 +1,14 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { auth } from '../../config/firebase';
 import { ArchiveView } from '../views/Archive';
-import { CreateView } from '../views/Create';
-import { SettingsView } from '../views/Settings';
 import { SignIn } from '../views/Auth/SignIn';
 import { SignUp } from '../views/Auth/SignUp';
-import { auth } from '../../config/firebase';
+import { CreateView } from '../views/Create';
+import { SettingsView } from '../views/Settings';
+// import { User } from 'firebase/auth';
 
 export type RootTabParamList = {
   Create: undefined;
@@ -38,9 +38,19 @@ export type IUser = {
 };
 
 export function Routes() {
-  const [authorizedUser, setAuthorizedUser] = useState<boolean>(auth.currentUser !== null);
-  console.log(auth.currentUser);
+  const [authorizedUser, setAuthorizedUser] = useState<boolean>();
 
+  auth.onAuthStateChanged((user) => {
+    if (!!user) {
+      // User is signed in.
+      setAuthorizedUser(true);
+    } else {
+      // No user is signed in.
+      setAuthorizedUser(false);
+    }
+  });
+
+  if (authorizedUser === undefined) return <></>;
   return (
     <>
       {!authorizedUser && (
