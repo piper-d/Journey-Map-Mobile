@@ -2,11 +2,12 @@ import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, SafeAreaView, Text } from 'react-native';
+import { Button, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import { styles } from './styles';
-import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
 import { useTrips } from '../../api/Trips';
+import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
+import { styles } from './styles';
+import { MetricsDisplay } from '../custom/MetricsDisplay';
 
 export type ITrackingObj = {
   currLocation: LocationObject;
@@ -57,9 +58,7 @@ export function Tracking({
   const stopTracking = useCallback(() => {
     watcher?.remove();
 
-    setIsTracking();
-
-    createTrip(formatData());
+    createTrip(formatData()).then(() => setIsTracking());
   }, [watcher, setIsTracking]);
 
   return (
@@ -82,14 +81,27 @@ export function Tracking({
         <Polyline coordinates={getSimplifiedCoords()} strokeWidth={5} strokeColor='white' />
       </MapView>
 
-      <Text>{`Distance: ${distance} Miles`}</Text>
-      <Text>{`Current Speed: ${getCurentSpeed()} MPH`}</Text>
-      <Text>{`Average Speed: ${getAverageSpeed()} MPH`}</Text>
+      <View style={styles.metrics}>
+        <MetricsDisplay header={'Distance:'} body={`${distance} Mi`} />
+        <MetricsDisplay
+          header={'Duration:'}
+          body={`${moment.utc(duration * 1000).format('HH:mm:ss')}`}
+        />
+        <MetricsDisplay header={'Current Speed:'} body={`${getCurentSpeed()} MPH`} />
+        <MetricsDisplay header={'Average Speed:'} body={`${getAverageSpeed()} MPH`} />
 
-      <Text>{`Duration: ${moment.utc(duration * 1000).format('HH:mm:ss')}`}</Text>
-      <Button title='STOP' onPress={() => stopTracking()} />
+        <TouchableOpacity
+          style={styles.cameraButton}
+          children={<Text>camera</Text>}
+          onPress={() => {}}
+        />
+        <TouchableOpacity
+          style={styles.stopButton}
+          children={<Text>End Trip</Text>}
+          onPress={() => stopTracking()}
+        />
+      </View>
       <Button title='GET MEEE' onPress={() => getAllTrips()} />
-      <Button title='GET 1' onPress={() => getTrip()} />
     </SafeAreaView>
   );
 }

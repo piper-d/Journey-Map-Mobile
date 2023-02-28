@@ -1,28 +1,47 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from '../../config/axios';
-import { TripData } from '../hooks/useTrackingFunctions';
 import { useState } from 'react';
+
+export type TripDataInput = {
+  ['title']: string;
+  ['point_coords']: number[][];
+  ['details']: {
+    ['distance']: number;
+    ['duration']: number;
+    ['average_speed']: string;
+  };
+};
+type ResponseTripData = TripDataInput & {
+  user: {};
+};
+
+export type TripData = {
+  id: number;
+  item: ResponseTripData;
+};
+
+const formatResponse = (items: ResponseTripData[]) => {
+  return items.map((x, index) => {
+    return { id: index + 1, item: x };
+  });
+};
 
 export const useTrips = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const createTrip = async (data: TripData) => {
+  const createTrip = async (data: TripDataInput) => {
     try {
       const token = await AsyncStorage.getItem('accessToken');
-      console.log(token);
       const response = await axios.post(
         `/trips`,
-        { data },
+        { ...data },
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.data);
-      console.log(response.statusText);
       console.log(response.status);
-      console.log(Object.entries(response.data).length);
     } catch (error) {
       console.log('error');
       console.log(error);
@@ -40,7 +59,8 @@ export const useTrips = () => {
       });
       setIsLoading(false);
       console.log(response.data);
-      return response.data;
+
+      return formatResponse(response.data);
     } catch (error) {
       console.log('error');
       console.log(error);

@@ -1,10 +1,19 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import { TripData } from '../../views/Archive';
+import MapView, { LatLng, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { styles } from './styles';
+import { TripData } from '../../api/Trips';
 
-export function ArchiveComponent({ date, duration, mileage, speed }: TripData) {
+const getLatLngCoords = (coords: number[][]) => {
+  return coords.map((x) => {
+    return { longitude: x[1], latitude: x[0] };
+  }) as LatLng[];
+};
+
+export function ArchiveComponent({ id, item }: TripData) {
+  const { duration, distance, average_speed } = item.details;
+
+  console.log(item.point_coords[0][0]);
   return (
     <TouchableOpacity
       style={styles.touchableConatiner}
@@ -12,25 +21,30 @@ export function ArchiveComponent({ date, duration, mileage, speed }: TripData) {
       onPress={() => console.log('PRESS')}
     >
       <>
-        <Text style={styles.title}>Run on 10/19/2022 at 2:36 PM</Text>
+        <Text style={styles.title}>{item.title}</Text>
         <View style={styles.mapBorder}>
           <MapView
             style={styles.map}
             mapType='hybrid'
             provider={PROVIDER_GOOGLE}
             scrollEnabled={false}
-
-            // region={{
-            //   latitude: initialLocation?.coords?.latitude!,
-            //   longitude: initialLocation?.coords?.longitude!,
-            //   latitudeDelta: 0.003,
-            //   longitudeDelta: 0.003,
-            // }}
-          />
+            region={{
+              latitude: item.point_coords[0][1],
+              longitude: item.point_coords[0][1],
+              latitudeDelta: 0.003,
+              longitudeDelta: 0.003,
+            }}
+          >
+            <Polyline
+              coordinates={getLatLngCoords(item.point_coords)}
+              strokeWidth={5}
+              strokeColor='white'
+            />
+          </MapView>
         </View>
         <Text style={styles.statistics} children={`Duration: ${duration}`} />
-        <Text style={styles.statistics} children={`Mileage: ${mileage}`} />
-        <Text style={styles.statistics} children={`Speed: ${speed}`} />
+        <Text style={styles.statistics} children={`Mileage: ${distance}`} />
+        <Text style={styles.statistics} children={`Speed: ${average_speed}`} />
       </>
     </TouchableOpacity>
   );

@@ -4,16 +4,7 @@ import moment from 'moment';
 import { useCallback, useEffect } from 'react';
 import { LatLng } from 'react-native-maps';
 import { ITrackingObj } from '../components/Create';
-
-export type TripData = {
-  ['title']: string;
-  ['point_coords']: number[][];
-  ['details']: {
-    ['distance']: number;
-    ['duration']: number;
-    ['average_speed']: string;
-  };
-};
+import { TripDataInput } from '../api/Trips';
 
 // Converts current speed from meters per second to MPH
 const convertToMinutesPerMile = (metersPerSecond: number | null): string => {
@@ -59,7 +50,7 @@ export const getTrackingFunction = (
 
   // Converts coordinates in order to draw polylines
   const getExportableCoords = useCallback(() => {
-    return (location!.locationArray ?? []).map((x) => [x.coords.longitude, x.coords.latitude]);
+    return (location!.locationArray ?? []).map((x) => [x.coords.latitude, x.coords.longitude]);
   }, [location!.locationArray]);
 
   // Updates distance
@@ -84,24 +75,20 @@ export const getTrackingFunction = (
     }
   }, [location]);
 
-  const formatData = useCallback((): TripData => {
+  const formatData = useCallback((): TripDataInput => {
     const data = {
-      ['title']: 'Temporary Title',
-      ['point_coords']: getExportableCoords(),
-      ['details']: {
-        ['distance']: distance,
-        ['duration']: duration,
-        ['average_speed']: getAverageSpeed(),
+      title: 'Temporary Title',
+      point_coords: getExportableCoords(),
+      details: {
+        distance: distance,
+        duration: duration,
+        average_speed: getAverageSpeed(),
+        start_time: location.locationArray[0].timestamp,
+        end_time: location.locationArray[location.locationArray.length - 1].timestamp,
       },
     };
-
-    console.log(data);
-    console.log(data.details);
-    console.log(data.point_coords);
-    console.log(data.title);
-
     return data;
-  }, [distance, duration, getAverageSpeed]);
+  }, [location.locationArray, distance, duration, getAverageSpeed]);
 
   return { options, getCurentSpeed, getAverageSpeed, getSimplifiedCoords, formatData };
 };

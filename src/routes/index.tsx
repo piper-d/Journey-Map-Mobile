@@ -42,6 +42,7 @@ export function Routes() {
 
   auth.onAuthStateChanged((user) => {
     if (!!user) {
+      // user.getIdToken().then((id) => console.log(id));
       // User is signed in.
       setAuthorizedUser(true);
     } else {
