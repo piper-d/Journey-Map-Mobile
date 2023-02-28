@@ -15,6 +15,13 @@ const convertToMinutesPerMile = (metersPerSecond: number | null): string => {
   return moment.utc(minutesPerMile * 1000 * 60).format('mm:ss');
 };
 
+const getTitle = (start_time: number) => {
+  const date = moment(start_time).format('MM/DD/YYYY');
+  const time = moment(start_time).format('hh:mm');
+
+  return `Trip on ${date} at ${time}`;
+};
+
 export const getTrackingFunction = (
   location: ITrackingObj,
   distance: number,
@@ -77,7 +84,7 @@ export const getTrackingFunction = (
 
   const formatData = useCallback((): TripDataInput => {
     const data = {
-      title: 'Temporary Title',
+      title: getTitle(location.locationArray[0].timestamp),
       point_coords: getExportableCoords(),
       details: {
         distance: distance,
