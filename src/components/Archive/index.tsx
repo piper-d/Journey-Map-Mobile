@@ -4,16 +4,40 @@ import MapView, { LatLng, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { styles } from './styles';
 import { TripData } from '../../api/Trips';
 
-const getLatLngCoords = (coords: number[][]) => {
+function calculateLatLngDelta(latLngs: LatLng[]) {
+  if (latLngs.length === 1) {
+    return { latitudeDelta: 0.003, longitudeDelta: 0.003 };
+  }
+
+  const lats = latLngs.map((latLng) => latLng.latitude);
+  const lngs = latLngs.map((latLng) => latLng.longitude);
+
+  const minLat = Math.min(...lats);
+  const maxLat = Math.max(...lats);
+  const minLng = Math.min(...lngs);
+  const maxLng = Math.max(...lngs);
+
+  const latitudeDelta = maxLat - minLat;
+  const longitudeDelta = maxLng - minLng;
+
+  return { latitudeDelta, longitudeDelta };
+}
+
+const getLatLngCoords = (coords: any[][]) => {
   return coords.map((x) => {
-    return { longitude: x[1], latitude: x[0] };
+    const formattedCoords = Object.values(x);
+    return { latitude: formattedCoords[0], longitude: formattedCoords[1] };
   }) as LatLng[];
 };
 
 export function ArchiveComponent({ id, item }: TripData) {
   const { duration, distance, average_speed } = item.details;
 
-  console.log(item.point_coords[0][0]);
+  const latLngCoords = getLatLngCoords(item.point_coords);
+  const latLngDelta = calculateLatLngDelta(latLngCoords);
+  console.log(calculateLatLngDelta(latLngCoords));
+  console.log(latLngCoords);
+
   return (
     <TouchableOpacity
       style={styles.touchableConatiner}
@@ -29,17 +53,11 @@ export function ArchiveComponent({ id, item }: TripData) {
             provider={PROVIDER_GOOGLE}
             scrollEnabled={false}
             region={{
-              latitude: item.point_coords[0][1],
-              longitude: item.point_coords[0][1],
-              latitudeDelta: 0.003,
-              longitudeDelta: 0.003,
+              ...latLngCoords[0],
+              ...latLngDelta,
             }}
           >
-            <Polyline
-              coordinates={getLatLngCoords(item.point_coords)}
-              strokeWidth={5}
-              strokeColor='white'
-            />
+            <Polyline coordinates={latLngCoords} strokeWidth={5} strokeColor='white' />
           </MapView>
         </View>
         <Text style={styles.statistics} children={`Duration: ${duration}`} />
