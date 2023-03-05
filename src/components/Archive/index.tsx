@@ -35,8 +35,6 @@ export function ArchiveComponent({ id, item }: TripData) {
 
   const latLngCoords = getLatLngCoords(item.point_coords);
   const latLngDelta = calculateLatLngDelta(latLngCoords);
-  console.log(calculateLatLngDelta(latLngCoords));
-  console.log(latLngCoords);
 
   return (
     <TouchableOpacity
