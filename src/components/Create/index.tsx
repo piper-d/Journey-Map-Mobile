@@ -7,7 +7,7 @@ import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { useTrips } from '../../api/Trips';
 import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
 import { styles } from './styles';
-import { MetricsDisplay } from '../custom/MetricsDisplay';
+import { MetricsDisplay } from '../Custom/MetricsDisplay';
 
 export type ITrackingObj = {
   currLocation: LocationObject;

@@ -13,6 +13,7 @@ export type TripDataInput = {
 };
 type ResponseTripData = TripDataInput & {
   user: {};
+  id: string;
 };
 
 export type TripData = {
@@ -22,6 +23,7 @@ export type TripData = {
 
 const formatResponse = (items: ResponseTripData[]) => {
   return items.map((x, index) => {
+    console.log(x.user);
     return { id: index + 1, item: x };
   });
 };
@@ -51,6 +53,7 @@ export const useTrips = () => {
   const getAllTrips = async () => {
     const token = await AsyncStorage.getItem('accessToken');
 
+    console.log(token);
     try {
       const response = await axios.get(`/trips`, {
         headers: {
@@ -58,7 +61,8 @@ export const useTrips = () => {
         },
       });
       setIsLoading(false);
-      console.log(response.data);
+      // console.log('here');
+      // console.log(response.data);
 
       return formatResponse(response.data);
     } catch (error) {
@@ -86,5 +90,31 @@ export const useTrips = () => {
     }
   };
 
-  return { isLoading, getAllTrips, getTrip, createTrip };
+  const updateTripTitle = async (id: string, data: { title: string }) => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      const response = await axios.put(
+        `/trips/${id}`,
+
+        {
+          ...data,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            id: id,
+          },
+        }
+      );
+      console.log(response.status);
+      return response.data;
+    } catch (error) {
+      console.log('error');
+      console.log(error);
+    }
+  };
+
+  return { isLoading, getAllTrips, getTrip, createTrip, updateTripTitle };
 };

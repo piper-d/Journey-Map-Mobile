@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ImageBackground, SafeAreaView, FlatList, View, Text } from 'react-native';
 import { TabProps } from '../../routes';
 import { styles } from './styles';
-import { ArchiveComponent } from '../../components/Archive';
+import { ArchiveSummary } from '../../components/Archive/ArchiveSummary';
 import { TripData, useTrips } from '../../api/Trips';
 import { useIsFocused } from '@react-navigation/native';
 
@@ -16,10 +16,10 @@ export function ArchiveView({ route, navigation }: TabProps) {
   console.log(isFocused);
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused && items === undefined) {
       getAllTrips().then((x) => setItems(x));
     }
-  }, [isFocused]);
+  }, [isFocused, items]);
   if (isLoading || items === undefined)
     return (
       <View>
@@ -33,7 +33,9 @@ export function ArchiveView({ route, navigation }: TabProps) {
         <FlatList
           contentContainerStyle={styles.list}
           data={items}
-          renderItem={({ item }) => <ArchiveComponent {...item} />}
+          renderItem={({ item }) => (
+            <ArchiveSummary {...item} setItems={() => setItems(undefined)} />
+          )}
           keyExtractor={(item) => item.id.toString()}
         />
       </ImageBackground>
