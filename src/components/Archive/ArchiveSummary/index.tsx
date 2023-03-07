@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import MapView, { LatLng, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { styles } from './styles';
-import { TripData } from '../../../api/Trips';
+import { TripData } from '../../../api/useTrips';
 import { ArchiveDialog } from '../ArchiveDialog';
 
 function calculateLatLngDelta(latLngs: LatLng[]) {

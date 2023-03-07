@@ -3,7 +3,7 @@ import { ImageBackground, SafeAreaView, FlatList, View, Text } from 'react-nativ
 import { TabProps } from '../../routes';
 import { styles } from './styles';
 import { ArchiveSummary } from '../../components/Archive/ArchiveSummary';
-import { TripData, useTrips } from '../../api/Trips';
+import { TripData, useTrips } from '../../api/useTrips';
 import { useIsFocused } from '@react-navigation/native';
 
 export function ArchiveView({ route, navigation }: TabProps) {

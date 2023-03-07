@@ -23,7 +23,7 @@ export type TripData = {
 
 const formatResponse = (items: ResponseTripData[]) => {
   return items.map((x, index) => {
-    console.log(x.user);
+    // console.log(x.user);
     return { id: index + 1, item: x };
   });
 };

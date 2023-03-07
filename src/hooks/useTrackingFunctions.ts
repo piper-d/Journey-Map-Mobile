@@ -4,7 +4,7 @@ import moment from 'moment';
 import { useCallback, useEffect } from 'react';
 import { LatLng } from 'react-native-maps';
 import { ITrackingObj } from '../components/Create';
-import { TripDataInput } from '../api/Trips';
+import { TripDataInput } from '../api/useTrips';
 
 // Converts current speed from meters per second to MPH
 const convertToMinutesPerMile = (metersPerSecond: number | null): string => {

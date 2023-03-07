@@ -4,7 +4,7 @@ import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Button, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import { useTrips } from '../../api/Trips';
+import { useTrips } from '../../api/useTrips';
 import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
 import { styles } from './styles';
 import { MetricsDisplay } from '../Custom/MetricsDisplay';

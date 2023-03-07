@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View } from 'react-native';
 import Dialog from 'react-native-dialog';
-import { useTrips } from '../../../api/Trips';
+import { useTrips } from '../../../api/useTrips';
 
 export const ArchiveDialog = ({
   id,
