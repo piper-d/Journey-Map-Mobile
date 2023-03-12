@@ -11,8 +11,6 @@ export function SignIn({
   navigation,
   setAuthorizedUser,
 }: Omit<IUser, 'authorizedUser'> & StackProps) {
-  // eminmammadzada.b@gmail.com
-  // admin123
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 

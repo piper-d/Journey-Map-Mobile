@@ -55,7 +55,7 @@ export const getTrackingFunction = (
     }));
   }, [location!.locationArray]);
 
-  // Converts coordinates in order to draw polylines
+  // Converts coordinates to push to backend
   const getExportableCoords = useCallback(() => {
     return (location!.locationArray ?? []).map((x) => [x.coords.latitude, x.coords.longitude]);
   }, [location!.locationArray]);

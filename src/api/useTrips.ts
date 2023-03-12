@@ -72,15 +72,14 @@ export const useTrips = () => {
   };
 
   const getTrip = async (id: string) => {
-    const tempId = 'wbZNeoXsyHSIbETgmapy';
     try {
       const token = await AsyncStorage.getItem('accessToken');
-      const response = await axios.get(`/trips/${tempId}`, {
+      const response = await axios.get(`/trips/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          id: tempId,
+          id: id,
         },
       });
       return response.data;
@@ -116,5 +115,37 @@ export const useTrips = () => {
     }
   };
 
-  return { isLoading, getAllTrips, getTrip, createTrip, updateTripTitle };
+  const addTripMedia = async (id: string, data: { image: string }) => {
+    try {
+      const formData = new FormData();
+      formData.append('latitude', '69');
+      formData.append('longitude', '69');
+      formData.append('image', data.image);
+
+      const token = await AsyncStorage.getItem('accessToken');
+      console.log(`/trips/${id}/media`);
+      const response = await axios.post(
+        `/trips/${id}/media`,
+        {
+          formData,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          params: {
+            id: id,
+          },
+        }
+      );
+      console.log(response.status);
+      return response.data;
+    } catch (error) {
+      console.log('error');
+      console.log(error);
+    }
+  };
+
+  return { isLoading, getAllTrips, getTrip, createTrip, updateTripTitle, addTripMedia };
 };
