@@ -1,7 +1,15 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { Button, ImageBackground, Pressable, SafeAreaView, Text, TextInput } from 'react-native';
+import {
+  Button,
+  ImageBackground,
+  Pressable,
+  SafeAreaView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { auth } from '../../../../config/firebase';
 import { IUser, StackProps } from '../../../routes';
 import { styles } from './styles';
@@ -42,7 +50,7 @@ export function SignIn({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ImageBackground style={styles.image} source={image} resizeMode='cover'>
         <TextInput
           style={styles.input}
@@ -67,7 +75,7 @@ export function SignIn({
         </Pressable>
         <Button title='Create an account' onPress={() => navigation.navigate('SignUp')} />
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 }
 

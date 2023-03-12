@@ -2,7 +2,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { Button, ImageBackground, Pressable, SafeAreaView, Text, TextInput } from 'react-native';
+import {
+  Button,
+  ImageBackground,
+  Pressable,
+  SafeAreaView,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import { auth, db } from '../../../../config/firebase';
 import { IUser, StackProps } from '../../../routes';
 import { styles } from './styles';
@@ -45,7 +53,7 @@ export function SignUp({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ImageBackground style={styles.image} source={image} resizeMode='cover'>
         <TextInput
           style={styles.input}
@@ -78,7 +86,7 @@ export function SignUp({
         </Pressable>
         <Button title='Sign in' onPress={() => navigation.navigate('SignIn')} />
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   );
 }
 
