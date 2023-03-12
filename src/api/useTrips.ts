@@ -21,9 +21,8 @@ export type TripData = {
   item: ResponseTripData;
 };
 
-const formatResponse = (items: ResponseTripData[]) => {
+const formatResponse = (items: ResponseTripData[]): TripData[] => {
   return items.map((x, index) => {
-    // console.log(x.user);
     return { id: index + 1, item: x };
   });
 };
@@ -50,25 +49,29 @@ export const useTrips = () => {
     }
   };
 
-  const getAllTrips = async () => {
+  const getAllTrips = async (): Promise<TripData[] | undefined> => {
     const token = await AsyncStorage.getItem('accessToken');
 
     console.log(token);
-    try {
-      const response = await axios.get(`/trips`, {
+    return await axios
+      .get(`/trips`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
-      setIsLoading(false);
-      // console.log('here');
-      // console.log(response.data);
+      })
+      .then((response) => {
+        setIsLoading(false);
+        const trips = response.data['trips'];
 
-      return formatResponse(response.data);
-    } catch (error) {
-      console.log('error');
-      console.log(error);
-    }
+        if (trips === 'you currently have no trips') throw 'No Trips';
+
+        return formatResponse(response.data);
+      })
+      .catch((error) => {
+        console.log('error');
+        console.log(error);
+        return undefined;
+      });
   };
 
   const getTrip = async (id: string) => {

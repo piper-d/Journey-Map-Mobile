@@ -11,14 +11,15 @@ export function SignIn({
   navigation,
   setAuthorizedUser,
 }: Omit<IUser, 'authorizedUser'> & StackProps) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState<string>();
+  const [password, setPassword] = useState<string>();
+  const [errorMessage, setErrorMessages] = useState<string>();
 
   const image = require('../../../.././assets/topographic.png');
 
   const signInWithPassword = async () => {
     console.log({ email, password });
-    signInWithEmailAndPassword(auth, email, password)
+    signInWithEmailAndPassword(auth, email!, password!)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
@@ -32,12 +33,11 @@ export function SignIn({
             setPassword('');
           });
         }
-        // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorMessage);
+        setErrorMessages(getErrorMessgages(error.message, password));
+
+        console.log(error);
       });
   };
 
@@ -59,7 +59,9 @@ export function SignIn({
           placeholder='Password'
           placeholderTextColor={'black'}
           autoCapitalize='none'
+          secureTextEntry={true}
         />
+        <Text style={styles.error}>{errorMessage}</Text>
         <Pressable style={styles.button} onPress={signInWithPassword}>
           <Text style={styles.text}>Sign In</Text>
         </Pressable>
@@ -68,3 +70,20 @@ export function SignIn({
     </SafeAreaView>
   );
 }
+
+const getErrorMessgages = (error: string | undefined, password: string | undefined) => {
+  console.log(error);
+  if (error === undefined) return '';
+
+  if (error.includes('missing-email')) {
+    return 'There was no email provided. Please enter one.';
+  } else if (error.includes('missing-password') || password === undefined) {
+    return 'There was no password provided. Please enter one.';
+  } else if (error.includes('invalid-email')) {
+    return 'The email entered does not exist. Please try again.';
+  } else if (error.includes('wrong-password')) {
+    return 'The password entered was incorrect. Please try again.';
+  }
+
+  return error;
+};
