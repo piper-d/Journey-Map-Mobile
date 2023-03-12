@@ -2,12 +2,14 @@ import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { useTrips } from '../../api/useTrips';
 import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
 import { styles } from './styles';
 import { MetricsDisplay } from '../Custom/MetricsDisplay';
+
+import * as ImagePicker from 'expo-image-picker';
 
 export type ITrackingObj = {
   currLocation: LocationObject;
@@ -29,7 +31,7 @@ export function Tracking({
   const [duration, setDuration] = useState(0);
   const [distance, setDistance] = useState(0);
 
-  const { getAllTrips, getTrip, createTrip } = useTrips();
+  const { createTrip } = useTrips();
 
   const { options, getCurentSpeed, getAverageSpeed, getSimplifiedCoords, formatData } =
     getTrackingFunction(location, distance, duration, setDistance);
@@ -93,7 +95,7 @@ export function Tracking({
         <TouchableOpacity
           style={styles.cameraButton}
           children={<Text>camera</Text>}
-          onPress={() => {}}
+          onPress={() => pickFromCamera()}
         />
         <TouchableOpacity
           style={styles.stopButton}
@@ -101,7 +103,23 @@ export function Tracking({
           onPress={() => stopTracking()}
         />
       </View>
-      <Button title='GET MEEE' onPress={() => getAllTrips()} />
     </SafeAreaView>
   );
 }
+
+const pickFromCamera = async () => {
+  const result = await ImagePicker.requestCameraPermissionsAsync();
+  if (result.granted) {
+    let data = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    });
+    if (!data.canceled) {
+      console.log(data.assets);
+    }
+  } else {
+    Alert.alert('The app needs permission to access the camera. Please change this in settings.');
+  }
+};
