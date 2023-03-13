@@ -16,8 +16,7 @@ Open the terminal.
 
 #### Install yarn
 
-Run the code below or other options [here].(https://classic.yarnpkg.com/lang/en/docs/install
-)
+Run the code below or other options [here](https://classic.yarnpkg.com/lang/en/docs/install).
 
 `npm install --global yarn`
 
