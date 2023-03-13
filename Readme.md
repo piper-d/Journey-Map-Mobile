@@ -1,38 +1,43 @@
-# Usage
+# Journey Map
+
+This is the mobile application for "Journey Map" a UCF Senior Design 2022-2023 Project.
+See more at https://journeymap-a8e65.web.app/
+
+## Usage
 
 Clone project and open within IDE (preferrably VS Code)
 
-## Prerequisites
+### Prerequisites
 
 Make sure to use Yarn and not npx.
 
 After opening the project within IDE,
 Open the terminal.
 
-### Install yarn
+#### Install yarn
 
-npm install --global yarn
+`npm install --global yarn`
 
 or other installation options from
 https://classic.yarnpkg.com/lang/en/docs/install
 
-### Check version (should be 1.22.19)
+#### Check version (should be 1.22.19)
 
-yarn --version
+`yarn --version`
 
-## Install Dependencies
+### Install Dependencies
 
-yarn
+`yarn`
 
-## Add environment variables
+### Add environment variables
 
 Create an .env file in the root of the project, and add the proper variables.
 
-## Start the project
+### Start the project
 
 Make sure to only run the project with the command:
 
-yarn expo start
+`yarn expo start`
 
 Other commands may seem to work but may cause weird errors down the road.
 
