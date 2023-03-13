@@ -16,16 +16,20 @@ Open the terminal.
 
 #### Install yarn
 
+Run the code below or other options [here].(https://classic.yarnpkg.com/lang/en/docs/install
+)
+
 `npm install --global yarn`
 
-or other installation options from
-https://classic.yarnpkg.com/lang/en/docs/install
-
 #### Check version (should be 1.22.19)
+
+Run the code below to ensure yarn is installed and has the correct version.
 
 `yarn --version`
 
 ### Install Dependencies
+
+Run the code below to install the dependencies from lock file.
 
 `yarn`
 

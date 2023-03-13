@@ -19,7 +19,8 @@ export default {
     ios: {
       supportsTablet: true,
       infoPlist: {
-        NSCameraUsageDescription: 'This app uses the camera to scan barcodes on event tickets.',
+        NSCameraUsageDescription:
+          'This app uses the camera to take photos or videos to add to trips.',
       },
     },
     android: {
