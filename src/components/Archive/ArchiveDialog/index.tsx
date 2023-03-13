@@ -3,6 +3,7 @@ import { View, Image, Alert } from 'react-native';
 import Dialog from 'react-native-dialog';
 import { useTrips } from '../../../api/useTrips';
 import * as ImagePicker from 'expo-image-picker';
+import * as Sharing from 'expo-sharing';
 
 export const ArchiveDialog = ({
   id,
@@ -57,6 +58,18 @@ export const ArchiveDialog = ({
       Alert.alert('The app needs permission to access the camera. Please change this in settings.');
     }
   };
+
+  const shareTrip = async () => {
+    const url = '';
+
+    const canShare = await Sharing.isAvailableAsync();
+
+    if (canShare) {
+      await Sharing.shareAsync(url, {});
+    } else {
+      Alert.alert('Sharing is not availble.');
+    }
+  };
   console.log(image);
   console.log(!!image);
 
@@ -74,6 +87,7 @@ export const ArchiveDialog = ({
         />
         {image.length > 0 && <Image source={{ uri: image }} style={{ width: 100, height: 200 }} />}
 
+        <Dialog.Button label='Share Trip' onPress={() => shareTrip()} />
         <Dialog.Button label='Add Media' onPress={() => pickImage()} />
         <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
         <Dialog.Button label='Save' onPress={() => onSave()} />

@@ -34,6 +34,7 @@
     "expo-constants": "^14.0.2",
     "expo-image-picker": "~14.0.2",
     "expo-location": "^15.0.1",
+    "expo-sharing": "~11.0.1",
     "expo-status-bar": "~1.4.2",
     "firebase": "^9.16.0",
     "geolib": "^3.3.3",
