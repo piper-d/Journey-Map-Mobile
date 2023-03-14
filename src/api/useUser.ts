@@ -48,5 +48,23 @@ export const useUser = () => {
     }
   };
 
-  return { getUser, changeUsername };
+  const deleteUser = async () => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      const response = await axios.delete(`/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log(response);
+
+      return response;
+    } catch (error) {
+      console.log('Error: User was not deleted');
+      console.log(error);
+    }
+  };
+
+  return { getUser, changeUsername, deleteUser };
 };
