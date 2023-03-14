@@ -7,6 +7,7 @@ import { IUser } from '../../routes';
 import { styles } from './styles';
 import { useUser } from '../../api/useUser';
 import { UsernameDialog } from '../../components/Settings/UsernameDialog';
+import { PasswordDialog } from '../../components/Settings/PasswordDialog';
 
 export function SettingsView({ setAuthorizedUser }: Omit<IUser, 'authorizedUser'>) {
   const image = require('../../.././assets/topographic.png');
@@ -31,6 +32,9 @@ export function SettingsView({ setAuthorizedUser }: Omit<IUser, 'authorizedUser'
     <>
       {isUsernameOpen && (
         <UsernameDialog isOpen={isUsernameOpen} setIsOpen={(x) => setIsUsernameOpen(x)} />
+      )}
+      {isPasswordOpen && (
+        <PasswordDialog isOpen={isPasswordOpen} setIsOpen={(x) => setIsPasswordOpen(x)} />
       )}
 
       <SafeAreaView style={styles.container}>
