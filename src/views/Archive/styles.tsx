@@ -2,20 +2,22 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    // alignItems: 'center',
-    // justifyContent: 'center',
     backgroundColor: '#212531',
   },
   image: {
     width: '100%',
-    // alignItems: 'center',
-    // justifyContent: 'center',
+    height: '100%',
+    textAlign: 'center',
+    alignItems: 'center',
   },
   list: {
-    // flexDirection: 'column',
-    // display: 'flex',
     alignItems: 'center',
-    // overflow: 'scroll',
-    // justifyContent: 'space-evenly',
+  },
+  text: {
+    color: 'white',
+    textAlign: 'center',
+    alignItems: 'center',
+    fontSize: 18,
+    lineHeight: 24,
   },
 });

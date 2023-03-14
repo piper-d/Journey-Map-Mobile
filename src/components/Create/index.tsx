@@ -2,11 +2,14 @@ import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, SafeAreaView, Text } from 'react-native';
+import { Alert, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import { styles } from './styles';
+import { useTrips } from '../../api/useTrips';
 import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
-import { useTrips } from '../../api/getTrips';
+import { styles } from './styles';
+import { MetricsDisplay } from '../Custom/MetricsDisplay';
+
+import * as ImagePicker from 'expo-image-picker';
 
 export type ITrackingObj = {
   currLocation: LocationObject;
@@ -28,17 +31,14 @@ export function Tracking({
   const [duration, setDuration] = useState(0);
   const [distance, setDistance] = useState(0);
 
-  const { getAllTrips, getTrip } = useTrips();
+  const { createTrip } = useTrips();
 
-  const { options, convertToMinutesPerMile, getPolylineCoords } = getTrackingFunction(
-    location,
-    distance,
-    setDistance
-  );
+  const { options, getCurentSpeed, getAverageSpeed, getSimplifiedCoords, formatData } =
+    getTrackingFunction(location, distance, duration, setDistance);
 
   useEffect(() => {
     Location.watchPositionAsync(options, (currentLocation) => {
-      console.log({ currentLocation });
+      // console.log({ currentLocation });
       setLocation((prevLocation) => ({
         currLocation: currentLocation,
         locationArray: [...(prevLocation?.locationArray ?? []), currentLocation],
@@ -60,7 +60,7 @@ export function Tracking({
   const stopTracking = useCallback(() => {
     watcher?.remove();
 
-    setIsTracking();
+    createTrip(formatData()).then(() => setIsTracking());
   }, [watcher, setIsTracking]);
 
   return (
@@ -80,15 +80,46 @@ export function Tracking({
           longitudeDelta: 0.005,
         }}
       >
-        <Polyline coordinates={getPolylineCoords()} strokeWidth={5} strokeColor='white' />
+        <Polyline coordinates={getSimplifiedCoords()} strokeWidth={5} strokeColor='white' />
       </MapView>
 
-      <Text>{`${distance} Miles`}</Text>
-      <Text>{`${convertToMinutesPerMile()} MPH`}</Text>
-      <Text>{`${moment.utc(duration * 1000).format('HH:mm:ss')} Duration`}</Text>
-      <Button title='STOP' onPress={() => stopTracking()} />
-      <Button title='GET MEEE' onPress={() => getAllTrips()} />
-      <Button title='GET 1' onPress={() => getTrip()} />
+      <View style={styles.metrics}>
+        <MetricsDisplay header={'Distance:'} body={`${distance} Mi`} />
+        <MetricsDisplay
+          header={'Duration:'}
+          body={`${moment.utc(duration * 1000).format('HH:mm:ss')}`}
+        />
+        <MetricsDisplay header={'Current Speed:'} body={`${getCurentSpeed()} MPH`} />
+        <MetricsDisplay header={'Average Speed:'} body={`${getAverageSpeed()} MPH`} />
+
+        <TouchableOpacity
+          style={styles.cameraButton}
+          children={<Text>camera</Text>}
+          onPress={() => pickFromCamera()}
+        />
+        <TouchableOpacity
+          style={styles.stopButton}
+          children={<Text>End Trip</Text>}
+          onPress={() => stopTracking()}
+        />
+      </View>
     </SafeAreaView>
   );
 }
+
+const pickFromCamera = async () => {
+  const result = await ImagePicker.requestCameraPermissionsAsync();
+  if (result.granted) {
+    let data = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.5,
+    });
+    if (!data.canceled) {
+      console.log(data.assets);
+    }
+  } else {
+    Alert.alert('The app needs permission to access the camera. Please change this in settings.');
+  }
+};

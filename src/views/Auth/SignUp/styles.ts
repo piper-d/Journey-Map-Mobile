@@ -39,4 +39,10 @@ export const styles = StyleSheet.create({
     letterSpacing: 0.25,
     color: 'white',
   },
+  error: {
+    fontSize: 18,
+    lineHeight: 24,
+    color: 'red',
+    textAlign: 'center',
+  },
 });

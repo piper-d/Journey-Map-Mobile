@@ -3,11 +3,29 @@ import { getDistance } from 'geolib';
 import moment from 'moment';
 import { useCallback, useEffect } from 'react';
 import { LatLng } from 'react-native-maps';
-import { ITrackingObj } from '../components/Create/Tracking';
+import { ITrackingObj } from '../components/Create';
+import { TripDataInput } from '../api/useTrips';
+
+// Converts current speed from meters per second to MPH
+const convertToMinutesPerMile = (metersPerSecond: number | null): string => {
+  if (metersPerSecond === null) return 'Not found';
+
+  const metersPerMile = 1609.34;
+  const minutesPerMile = metersPerMile / (metersPerSecond * 60);
+  return moment.utc(minutesPerMile * 1000 * 60).format('mm:ss');
+};
+
+const getTitle = (start_time: number) => {
+  const date = moment(start_time).format('MM/DD/YYYY');
+  const time = moment(start_time).format('hh:mm');
+
+  return `Trip on ${date} at ${time}`;
+};
 
 export const getTrackingFunction = (
   location: ITrackingObj,
   distance: number,
+  duration: number,
   setDistance: (x: number) => void
 ) => {
   const options = {
@@ -16,21 +34,30 @@ export const getTrackingFunction = (
     distanceInterval: 3,
   };
 
-  const convertToMinutesPerMile = useCallback((): string => {
-    const metersPerMile = 1609.34; // Number of meters in a mile
-    const secondsPerMinute = 60; // Number of seconds in a minute
-    const milesPerSecond = (location.currLocation?.coords.speed ?? 0) / metersPerMile; // Convert meters per second to miles per second
-    const secondsPerMile = 1 / milesPerSecond; // Number of seconds it takes to run a mile
-    const minutesPerMile = secondsPerMile / secondsPerMinute; // Convert seconds per mile to minutes per mile
-    return moment.utc(minutesPerMile * 1000 * 60).format('mm:ss');
+  const getCurentSpeed = useCallback(() => {
+    return convertToMinutesPerMile(location.currLocation?.coords.speed);
   }, [location.currLocation?.coords.speed]);
 
+  const getAverageSpeed = useCallback(() => {
+    const sumSpeed = location.locationArray.reduce(
+      (sum, location) => sum + (location.coords.speed ?? 0),
+      0
+    );
+    const coordsLen = location.locationArray.length;
+    return convertToMinutesPerMile(sumSpeed / coordsLen);
+  }, [location.locationArray]);
+
   // Converts coordinates in order to draw polylines
-  const getPolylineCoords = useCallback((): LatLng[] => {
+  const getSimplifiedCoords = useCallback((): LatLng[] => {
     return (location!.locationArray ?? []).map((x) => ({
       latitude: x.coords.latitude,
       longitude: x.coords.longitude,
     }));
+  }, [location!.locationArray]);
+
+  // Converts coordinates to push to backend
+  const getExportableCoords = useCallback(() => {
+    return (location!.locationArray ?? []).map((x) => [x.coords.latitude, x.coords.longitude]);
   }, [location!.locationArray]);
 
   // Updates distance
@@ -55,5 +82,20 @@ export const getTrackingFunction = (
     }
   }, [location]);
 
-  return { options, convertToMinutesPerMile, getPolylineCoords };
+  const formatData = useCallback((): TripDataInput => {
+    const data = {
+      title: getTitle(location.locationArray[0].timestamp),
+      point_coords: getExportableCoords(),
+      details: {
+        distance: distance,
+        duration: duration,
+        average_speed: getAverageSpeed(),
+        start_time: location.locationArray[0].timestamp,
+        end_time: location.locationArray[location.locationArray.length - 1].timestamp,
+      },
+    };
+    return data;
+  }, [location.locationArray, distance, duration, getAverageSpeed]);
+
+  return { options, getCurentSpeed, getAverageSpeed, getSimplifiedCoords, formatData };
 };
