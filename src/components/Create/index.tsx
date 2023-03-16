@@ -2,7 +2,7 @@ import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
 import moment from 'moment';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Alert, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ImageBackground, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { useTrips } from '../../api/useTrips';
 import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
@@ -10,6 +10,7 @@ import { styles } from './styles';
 
 import * as ImagePicker from 'expo-image-picker';
 import { MetricsDisplay } from '../custom/MetricsDisplay';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export type ITrackingObj = {
   currLocation: LocationObject;
@@ -23,6 +24,8 @@ export function Tracking({
   initialLocation: LocationObject;
   setIsTracking: () => void;
 }) {
+  const image = require('../../.././assets/topographic.png');
+
   const [location, setLocation] = useState<ITrackingObj>({
     currLocation: initialLocation,
     locationArray: [initialLocation],
@@ -65,44 +68,45 @@ export function Tracking({
 
   return (
     <SafeAreaView style={styles.container}>
-      <MapView
-        style={styles.map}
-        showsUserLocation
-        showsMyLocationButton
-        mapType='hybrid'
-        provider={PROVIDER_GOOGLE}
-        userLocationUpdateInterval={5000}
-        // scrollEnabled={false}
-        region={{
-          latitude: location?.currLocation?.coords?.latitude!,
-          longitude: location?.currLocation?.coords?.longitude!,
-          latitudeDelta: 0.005,
-          longitudeDelta: 0.005,
-        }}
-      >
-        <Polyline coordinates={getSimplifiedCoords()} strokeWidth={5} strokeColor='white' />
-      </MapView>
+      <ImageBackground style={styles.image} source={image} resizeMode='cover'>
+        <View style={styles.mapContainer}>
+          <MapView
+            style={styles.map}
+            showsUserLocation
+            showsMyLocationButton
+            mapType='hybrid'
+            provider={PROVIDER_GOOGLE}
+            userLocationUpdateInterval={5000}
+            // scrollEnabled={false}
+            region={{
+              latitude: location?.currLocation?.coords?.latitude!,
+              longitude: location?.currLocation?.coords?.longitude!,
+              latitudeDelta: 0.005,
+              longitudeDelta: 0.005,
+            }}
+          >
+            <Polyline coordinates={getSimplifiedCoords()} strokeWidth={5} strokeColor='white' />
+          </MapView>
+        </View>
 
-      <View style={styles.metrics}>
-        <MetricsDisplay header={'Distance:'} body={`${distance} Mi`} />
-        <MetricsDisplay
-          header={'Duration:'}
-          body={`${moment.utc(duration * 1000).format('HH:mm:ss')}`}
-        />
-        <MetricsDisplay header={'Current Speed:'} body={`${getCurentSpeed()} MPH`} />
-        <MetricsDisplay header={'Average Speed:'} body={`${getAverageSpeed()} MPH`} />
-
-        <TouchableOpacity
-          style={styles.cameraButton}
-          children={<Text>camera</Text>}
-          onPress={() => pickFromCamera()}
-        />
-        <TouchableOpacity
-          style={styles.stopButton}
-          children={<Text>End Trip</Text>}
-          onPress={() => stopTracking()}
-        />
-      </View>
+        <View style={styles.metricsContainer}>
+          <MetricsDisplay header={'Distance:'} body={`${distance} Mi`} />
+          <MetricsDisplay
+            header={'Duration:'}
+            body={`${moment.utc(duration * 1000).format('HH:mm:ss')}`}
+          />
+          <MetricsDisplay header={'Current Speed:'} body={`${getCurentSpeed()} MPH`} />
+          <MetricsDisplay header={'Average Speed:'} body={`${getAverageSpeed()} MPH`} />
+        </View>
+        <View style={styles.buttonsContainer}>
+          <TouchableOpacity style={styles.cameraButton} onPress={() => pickFromCamera()}>
+            <MaterialCommunityIcons name='camera' color='white' size={50} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.stopButton} onPress={() => stopTracking()}>
+            <MaterialCommunityIcons name='stop' color='white' size={42} />
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </SafeAreaView>
   );
 }

@@ -1,6 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { auth } from '../../config/firebase';
 import { ArchiveView } from '../views/Archive';
@@ -8,7 +8,6 @@ import { SignIn } from '../views/Auth/SignIn';
 import { SignUp } from '../views/Auth/SignUp';
 import { CreateView } from '../views/Create';
 import { SettingsView } from '../views/Settings';
-// import { User } from 'firebase/auth';
 
 export type RootTabParamList = {
   Create: undefined;
