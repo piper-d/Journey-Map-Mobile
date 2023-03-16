@@ -4,6 +4,7 @@ import MapView, { LatLng, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { styles } from './styles';
 import { TripData } from '../../../api/useTrips';
 import { ArchiveDialog } from '../ArchiveDialog';
+import moment from 'moment';
 
 function calculateLatLngDelta(latLngs: LatLng[]) {
   if (latLngs.length === 1) {
@@ -73,9 +74,12 @@ export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: ()
               <Polyline coordinates={latLngCoords} strokeWidth={5} strokeColor='white' />
             </MapView>
           </View>
-          <Text style={styles.statistics} children={`Duration: ${duration}`} />
-          <Text style={styles.statistics} children={`Mileage: ${distance}`} />
-          <Text style={styles.statistics} children={`Speed: ${average_speed}`} />
+          <Text
+            style={styles.statistics}
+            children={`Duration: ${moment.utc(Number(duration) * 1000).format('HH:mm:ss')}`}
+          />
+          <Text style={styles.statistics} children={`Mileage: ${distance} Mi`} />
+          <Text style={styles.statistics} children={`Speed: ${average_speed} MPH`} />
         </>
       </TouchableOpacity>
     </>

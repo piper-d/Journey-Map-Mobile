@@ -26,10 +26,13 @@ export function Tracking({
 }) {
   const image = require('../../.././assets/topographic.png');
 
-  const [location, setLocation] = useState<ITrackingObj>({
-    currLocation: initialLocation,
-    locationArray: [initialLocation],
-  });
+  const [location, setLocation] = useState<ITrackingObj>();
+  // {
+  //   currLocation: initialLocation,
+  //   locationArray: [initialLocation],
+  // }
+
+  // console.log(location);
   const [watcher, setWatcher] = useState<Location.LocationSubscription>();
   const [duration, setDuration] = useState(0);
   const [distance, setDistance] = useState(0);
@@ -63,7 +66,7 @@ export function Tracking({
   const stopTracking = useCallback(() => {
     watcher?.remove();
 
-    createTrip(formatData()).then(() => setIsTracking());
+    createTrip(formatData(location, distance, duration)).then(() => setIsTracking());
   }, [watcher, setIsTracking]);
 
   return (

@@ -6,6 +6,21 @@ import { LatLng } from 'react-native-maps';
 import { ITrackingObj } from '../components/Create';
 import { TripDataInput } from '../api/useTrips';
 
+const fakeCoords: Location.LocationObject[] = [
+  {
+    coords: {
+      longitude: 0,
+      latitude: 0,
+      altitude: 0,
+      accuracy: 0,
+      altitudeAccuracy: 0,
+      heading: 0,
+      speed: 0,
+    },
+    timestamp: 0,
+  },
+];
+
 // Converts current speed from meters per second to MPH
 const convertToMinutesPerMile = (metersPerSecond: number | null): string => {
   if (metersPerSecond === null) return 'Not found';
@@ -23,7 +38,7 @@ const getTitle = (start_time: number) => {
 };
 
 export const getTrackingFunction = (
-  location: ITrackingObj,
+  location: ITrackingObj | undefined,
   distance: number,
   duration: number,
   setDistance: (x: number) => void
@@ -35,37 +50,45 @@ export const getTrackingFunction = (
   };
 
   const getCurentSpeed = useCallback(() => {
+    if (location === undefined) return '0';
     return convertToMinutesPerMile(location.currLocation?.coords.speed);
-  }, [location.currLocation?.coords.speed]);
+  }, [location]);
 
   const getAverageSpeed = useCallback(() => {
+    if (location === undefined) return '0';
+
     const sumSpeed = location.locationArray.reduce(
       (sum, location) => sum + (location.coords.speed ?? 0),
       0
     );
     const coordsLen = location.locationArray.length;
     return convertToMinutesPerMile(sumSpeed / coordsLen);
-  }, [location.locationArray]);
+  }, [location?.locationArray]);
 
   // Converts coordinates in order to draw polylines
   const getSimplifiedCoords = useCallback((): LatLng[] => {
-    return (location!.locationArray ?? []).map((x) => ({
+    const coords = location === undefined ? fakeCoords : location!.locationArray;
+
+    return coords.map((x) => ({
       latitude: x.coords.latitude,
       longitude: x.coords.longitude,
     }));
-  }, [location!.locationArray]);
+  }, [location?.locationArray]);
 
   // Converts coordinates to push to backend
-  const getExportableCoords = useCallback(() => {
-    return (location!.locationArray ?? []).map((x) => [x.coords.latitude, x.coords.longitude]);
-  }, [location!.locationArray]);
+  const getExportableCoords = useCallback((location: ITrackingObj | undefined) => {
+    const coords = location === undefined ? fakeCoords : location!.locationArray;
+
+    return coords.map((x) => [x.coords.latitude, x.coords.longitude]);
+  }, []);
 
   // Updates distance
   useEffect(() => {
-    const coordsLength = location.locationArray.length;
-    if (coordsLength > 2) {
-      setDistance(
-        distance +
+    if (location !== undefined) {
+      const coordsLength = location.locationArray.length;
+      if (coordsLength > 2) {
+        const currDistance =
+          distance +
           0.000621 *
             getDistance(
               {
@@ -77,25 +100,42 @@ export const getTrackingFunction = (
                 latitude: location.locationArray[coordsLength - 1].coords.latitude,
               },
               1
-            )
-      );
+            );
+        // console.log(currDistance);
+        const currRoundedDistance = Math.round(currDistance * 10000) / 10000;
+        // console.log(currRoundedDistance);
+        setDistance(currRoundedDistance);
+      }
     }
-  }, [location]);
+  }, [location?.locationArray]);
 
-  const formatData = useCallback((): TripDataInput => {
+  const formatData = (
+    location: ITrackingObj | undefined,
+    distance: number,
+    duration: number
+  ): TripDataInput => {
+    console.log('Here');
+    console.log(location);
+
+    const titleDate = location === undefined ? 0 : location!.locationArray[0].timestamp;
+    const startTime = location === undefined ? 0 : location.locationArray[0].timestamp;
+    const endTime =
+      location === undefined
+        ? 0
+        : location.locationArray[location!.locationArray.length - 1].timestamp;
     const data = {
-      title: getTitle(location.locationArray[0].timestamp),
-      point_coords: getExportableCoords(),
+      title: getTitle(titleDate),
+      point_coords: getExportableCoords(location),
       details: {
-        distance: distance,
-        duration: duration,
+        distance: distance.toString(),
+        duration: duration.toString(),
         average_speed: getAverageSpeed(),
-        start_time: location.locationArray[0].timestamp,
-        end_time: location.locationArray[location.locationArray.length - 1].timestamp,
+        start_time: startTime,
+        end_time: endTime,
       },
     };
     return data;
-  }, [location.locationArray, distance, duration, getAverageSpeed]);
+  };
 
   return { options, getCurentSpeed, getAverageSpeed, getSimplifiedCoords, formatData };
 };
