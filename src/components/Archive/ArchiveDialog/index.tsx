@@ -21,7 +21,7 @@ export const ArchiveDialog = ({
   const [newTitle, setNewTitle] = useState<string>('');
   const [image, setImage] = useState<string>('');
 
-  const { updateTripTitle, addTripMedia } = useTrips();
+  const { updateTripTitle, addTripMedia, deleteTrip } = useTrips();
 
   const onSave = () => {
     if (newTitle.length > 0) {
@@ -36,6 +36,20 @@ export const ArchiveDialog = ({
     if (image?.length > 0) {
       addTripMedia(id, { image: image }).then((x) => {});
     }
+  };
+
+  const onDelete = () => {
+    deleteTrip(id)
+      .then((x) => {
+        console.log('Trip has been deleted');
+        console.log(x);
+        setIsOpen(false);
+        setItems();
+      })
+      .catch((error) => {
+        console.log('error');
+        console.log(error);
+      });
   };
 
   const pickImage = async () => {
@@ -89,6 +103,7 @@ export const ArchiveDialog = ({
 
         <Dialog.Button label='Share Trip' onPress={() => shareTrip()} />
         <Dialog.Button label='Add Media' onPress={() => pickImage()} />
+        <Dialog.Button label='Delete Trip' onPress={() => onDelete()} />
         <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
         <Dialog.Button label='Save' onPress={() => onSave()} />
       </Dialog.Container>
