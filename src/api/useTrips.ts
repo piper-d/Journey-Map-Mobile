@@ -52,7 +52,6 @@ export const useTrips = () => {
   const getAllTrips = async (): Promise<TripData[] | undefined> => {
     const token = await AsyncStorage.getItem('accessToken');
 
-    console.log(token);
     return await axios
       .get(`/trips`, {
         headers: {
@@ -118,6 +117,25 @@ export const useTrips = () => {
     }
   };
 
+  const deleteTrip = async (id: string) => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      const response = await axios.delete(`/trips/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          id: id,
+        },
+      });
+      console.log(response.status);
+      return response.data;
+    } catch (error) {
+      console.log('error');
+      console.log(error);
+    }
+  };
+
   const addTripMedia = async (id: string, data: { image: string }) => {
     try {
       const formData = new FormData();
@@ -150,5 +168,5 @@ export const useTrips = () => {
     }
   };
 
-  return { isLoading, getAllTrips, getTrip, createTrip, updateTripTitle, addTripMedia };
+  return { isLoading, getAllTrips, getTrip, createTrip, updateTripTitle, addTripMedia, deleteTrip };
 };
