@@ -26,21 +26,26 @@ export function Tracking({
 }) {
   const image = require('../../.././assets/topographic.png');
 
-  const [location, setLocation] = useState<ITrackingObj>();
-  // {
-  //   currLocation: initialLocation,
-  //   locationArray: [initialLocation],
-  // }
+  const [location, setLocation] = useState<ITrackingObj>({
+    currLocation: initialLocation,
+    locationArray: [initialLocation],
+  });
 
-  // console.log(location);
   const [watcher, setWatcher] = useState<Location.LocationSubscription>();
   const [duration, setDuration] = useState(0);
   const [distance, setDistance] = useState(0);
 
   const { createTrip } = useTrips();
 
-  const { options, getCurentSpeed, getAverageSpeed, getSimplifiedCoords, formatData } =
-    getTrackingFunction(location, distance, duration, setDistance);
+  const {
+    options,
+    getCurentSpeed,
+    getAverageSpeed,
+    getSimplifiedCoords,
+    formatData,
+    getTitle,
+    getExportableCoords,
+  } = getTrackingFunction(location, distance, duration, setDistance);
 
   useEffect(() => {
     Location.watchPositionAsync(options, (currentLocation) => {
@@ -63,11 +68,21 @@ export function Tracking({
       clearTimeout(durationTimer);
     };
   }, []);
-  const stopTracking = useCallback(() => {
+  const stopTracking = () => {
     watcher?.remove();
 
-    createTrip(formatData(location, distance, duration)).then(() => setIsTracking());
-  }, [watcher, setIsTracking]);
+    createTrip({
+      title: getTitle(location.locationArray[0].timestamp),
+      point_coords: getExportableCoords(),
+      details: {
+        distance: (Math.round(distance * 1000) / 1000).toString(),
+        duration: duration.toString(),
+        average_speed: getAverageSpeed(),
+        start_time: location.locationArray[0].timestamp,
+        end_time: location.locationArray[location.locationArray.length - 1].timestamp,
+      },
+    }).then(() => setIsTracking());
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -93,7 +108,7 @@ export function Tracking({
         </View>
 
         <View style={styles.metricsContainer}>
-          <MetricsDisplay header={'Distance:'} body={`${distance} Mi`} />
+          <MetricsDisplay header={'Distance:'} body={`${Math.round(distance * 1000) / 1000} Mi`} />
           <MetricsDisplay
             header={'Duration:'}
             body={`${moment.utc(duration * 1000).format('HH:mm:ss')}`}

@@ -30,15 +30,8 @@ const convertToMinutesPerMile = (metersPerSecond: number | null): string => {
   return moment.utc(minutesPerMile * 1000 * 60).format('mm:ss');
 };
 
-const getTitle = (start_time: number) => {
-  const date = moment(start_time).format('MM/DD/YYYY');
-  const time = moment(start_time).format('hh:mm');
-
-  return `Trip on ${date} at ${time}`;
-};
-
 export const getTrackingFunction = (
-  location: ITrackingObj | undefined,
+  location: ITrackingObj,
   distance: number,
   duration: number,
   setDistance: (x: number) => void
@@ -50,13 +43,10 @@ export const getTrackingFunction = (
   };
 
   const getCurentSpeed = useCallback(() => {
-    if (location === undefined) return '0';
     return convertToMinutesPerMile(location.currLocation?.coords.speed);
-  }, [location]);
+  }, [location.locationArray]);
 
   const getAverageSpeed = useCallback(() => {
-    if (location === undefined) return '0';
-
     const sumSpeed = location.locationArray.reduce(
       (sum, location) => sum + (location.coords.speed ?? 0),
       0
@@ -67,75 +57,69 @@ export const getTrackingFunction = (
 
   // Converts coordinates in order to draw polylines
   const getSimplifiedCoords = useCallback((): LatLng[] => {
-    const coords = location === undefined ? fakeCoords : location!.locationArray;
-
-    return coords.map((x) => ({
+    return location?.locationArray.map((x) => ({
       latitude: x.coords.latitude,
       longitude: x.coords.longitude,
     }));
   }, [location?.locationArray]);
 
   // Converts coordinates to push to backend
-  const getExportableCoords = useCallback((location: ITrackingObj | undefined) => {
-    const coords = location === undefined ? fakeCoords : location!.locationArray;
-
-    return coords.map((x) => [x.coords.latitude, x.coords.longitude]);
-  }, []);
+  const getExportableCoords = useCallback(() => {
+    return location.locationArray.map((x) => [x.coords.latitude, x.coords.longitude]);
+  }, [location.locationArray]);
 
   // Updates distance
   useEffect(() => {
-    if (location !== undefined) {
-      const coordsLength = location.locationArray.length;
-      if (coordsLength > 2) {
-        const currDistance =
-          distance +
-          0.000621 *
-            getDistance(
-              {
-                longitude: location.locationArray[coordsLength - 2].coords.longitude,
-                latitude: location.locationArray[coordsLength - 2].coords.latitude,
-              },
-              {
-                longitude: location.locationArray[coordsLength - 1].coords.longitude,
-                latitude: location.locationArray[coordsLength - 1].coords.latitude,
-              },
-              1
-            );
-        // console.log(currDistance);
-        const currRoundedDistance = Math.round(currDistance * 10000) / 10000;
-        // console.log(currRoundedDistance);
-        setDistance(currRoundedDistance);
-      }
+    const coordsLength = location.locationArray.length;
+    if (coordsLength > 2) {
+      const currDistance =
+        distance +
+        0.000621 *
+          getDistance(
+            {
+              longitude: location.locationArray[coordsLength - 2].coords.longitude,
+              latitude: location.locationArray[coordsLength - 2].coords.latitude,
+            },
+            {
+              longitude: location.locationArray[coordsLength - 1].coords.longitude,
+              latitude: location.locationArray[coordsLength - 1].coords.latitude,
+            },
+            1
+          );
+      const currRoundedDistance = Math.round(currDistance * 100000) / 100000;
+      setDistance(currRoundedDistance);
     }
   }, [location?.locationArray]);
 
-  const formatData = (
-    location: ITrackingObj | undefined,
-    distance: number,
-    duration: number
-  ): TripDataInput => {
-    console.log('Here');
-    console.log(location);
+  const getTitle = (start_time: number) => {
+    const date = moment(start_time).format('MM/DD/YYYY');
+    const time = moment(start_time).format('hh:mm');
 
-    const titleDate = location === undefined ? 0 : location!.locationArray[0].timestamp;
-    const startTime = location === undefined ? 0 : location.locationArray[0].timestamp;
-    const endTime =
-      location === undefined
-        ? 0
-        : location.locationArray[location!.locationArray.length - 1].timestamp;
+    return `Trip on ${date} at ${time}`;
+  };
+
+  const formatData = useCallback((): TripDataInput => {
     const data = {
-      title: getTitle(titleDate),
-      point_coords: getExportableCoords(location),
+      title: getTitle(location.locationArray[0].timestamp),
+      point_coords: getExportableCoords(),
       details: {
-        distance: distance.toString(),
+        distance: (Math.round(distance * 1000) / 1000).toString(),
         duration: duration.toString(),
         average_speed: getAverageSpeed(),
-        start_time: startTime,
-        end_time: endTime,
+        start_time: location.locationArray[0].timestamp,
+        end_time: location.locationArray[location.locationArray.length - 1].timestamp,
       },
     };
     return data;
-  };
+  }, [location.locationArray, distance, duration, getAverageSpeed]);
 
-  return { options, getCurentSpeed, getAverageSpeed, getSimplifiedCoords, formatData };
+  return {
+    options,
+    getCurentSpeed,
+    getAverageSpeed,
+    getSimplifiedCoords,
+    formatData,
+    getTitle,
+    getExportableCoords,
+  };
 };

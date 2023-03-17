@@ -9,6 +9,8 @@ export type TripDataInput = {
     ['distance']: string;
     ['duration']: string;
     ['average_speed']: string;
+    ['start_time']: number;
+    ['end_time']: number;
   };
 };
 type ResponseTripData = TripDataInput & {

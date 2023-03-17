@@ -10,25 +10,37 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 export function CreateView({ route, navigation }: TabProps) {
   const [initialLocation, setInitialLocation] = useState<LocationObject>();
-  const [errorMsg, setErrorMsg] = useState<string>();
   const [isTracking, setIsTracking] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isTrackingReady, setIsTrackingReady] = useState<boolean>(false);
 
   useEffect(() => {
     async function checkStatus() {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
+        alert('Permission to access location was denied');
         return;
       }
-      const initLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      });
-      setInitialLocation(initLocation);
+      await Location.getCurrentPositionAsync();
     }
     checkStatus();
   }, []);
+
+  const startTracking = () => {
+    Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High,
+    }).then((currLocation) => {
+      setInitialLocation(currLocation);
+      setIsTrackingReady(true);
+    });
+  };
+
+  useEffect(() => {
+    if (isTrackingReady) {
+      setIsTracking(true);
+    }
+  }, [isTrackingReady]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -53,7 +65,7 @@ export function CreateView({ route, navigation }: TabProps) {
             <TouchableOpacity
               style={styles.button}
               activeOpacity={0.9}
-              onPress={() => setIsTracking(true)}
+              onPress={() => startTracking()}
               disabled={isLoading}
             >
               <MaterialCommunityIcons name='plus' size={48} />
@@ -63,7 +75,13 @@ export function CreateView({ route, navigation }: TabProps) {
       )}
 
       {isTracking && (
-        <Tracking initialLocation={initialLocation!} setIsTracking={() => setIsTracking(false)} />
+        <Tracking
+          initialLocation={initialLocation!}
+          setIsTracking={() => {
+            setIsTracking(false);
+            setIsTrackingReady(false);
+          }}
+        />
       )}
     </SafeAreaView>
   );
