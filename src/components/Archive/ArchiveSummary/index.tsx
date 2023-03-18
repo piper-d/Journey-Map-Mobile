@@ -19,11 +19,22 @@ function calculateLatLngDelta(latLngs: LatLng[]) {
   const minLng = Math.min(...lngs);
   const maxLng = Math.max(...lngs);
 
-  const latitudeDelta = maxLat - minLat;
-  const longitudeDelta = maxLng - minLng;
+  const latitudeDelta = (maxLat - minLat) * 1.5;
+  const longitudeDelta = (maxLng - minLng) * 1.5;
 
   return { latitudeDelta, longitudeDelta };
 }
+
+const calculateLatLngAvg = (locations: LatLng[]) => {
+  const totalLocations = locations.length;
+
+  const averageLongitude =
+    locations.reduce((sum, location) => sum + location.longitude, 0) / totalLocations;
+
+  const averageLatitude =
+    locations.reduce((sum, location) => sum + location.latitude, 0) / totalLocations;
+  return { longitude: averageLongitude, latitude: averageLatitude } as LatLng;
+};
 
 const getLatLngCoords = (coords: any[][]) => {
   return coords.map((x) => {
@@ -40,6 +51,7 @@ export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: ()
 
   const latLngCoords = getLatLngCoords(item.point_coords);
   const latLngDelta = calculateLatLngDelta(latLngCoords);
+  const latLngAvg = calculateLatLngAvg(latLngCoords);
 
   return (
     <>
@@ -67,7 +79,7 @@ export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: ()
               provider={PROVIDER_GOOGLE}
               scrollEnabled={false}
               region={{
-                ...latLngCoords[0],
+                ...latLngAvg,
                 ...latLngDelta,
               }}
             >
