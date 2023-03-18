@@ -8,6 +8,7 @@ import { SignIn } from '../views/Auth/SignIn';
 import { SignUp } from '../views/Auth/SignUp';
 import { CreateView } from '../views/Create';
 import { SettingsView } from '../views/Settings';
+import { TripData } from '../api/useTrips';
 
 export type RootTabParamList = {
   Create: undefined;
@@ -38,6 +39,7 @@ export type IUser = {
 
 export function Routes() {
   const [authorizedUser, setAuthorizedUser] = useState<boolean>();
+  const [items, setItems] = useState<TripData[]>();
 
   auth.onAuthStateChanged((user) => {
     if (!!user) {
@@ -47,6 +49,7 @@ export function Routes() {
     } else {
       // No user is signed in.
       setAuthorizedUser(false);
+      setItems(undefined);
     }
   });
 
@@ -71,13 +74,15 @@ export function Routes() {
         <Tab.Navigator initialRouteName='Create'>
           <Tab.Screen
             name='Create'
-            component={CreateView}
             options={{ tabBarIcon: () => CreateIcon }}
+            children={() => <CreateView refreshArchive={() => setItems} />}
           />
           <Tab.Screen
             name='Archive'
-            component={ArchiveView}
             options={{ tabBarIcon: () => ArchiveIcon }}
+            children={() => (
+              <ArchiveView items={items} setItems={(x: TripData[] | undefined) => setItems(x)} />
+            )}
           />
           <Tab.Screen
             name='Settings'

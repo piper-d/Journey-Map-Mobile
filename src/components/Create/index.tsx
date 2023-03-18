@@ -20,9 +20,11 @@ export type ITrackingObj = {
 export function Tracking({
   initialLocation,
   setIsTracking,
+  refreshArchive,
 }: {
   initialLocation: LocationObject;
   setIsTracking: () => void;
+  refreshArchive: () => void;
 }) {
   const image = require('../../.././assets/topographic.png');
 
@@ -81,7 +83,11 @@ export function Tracking({
         start_time: location.locationArray[0].timestamp,
         end_time: location.locationArray[location.locationArray.length - 1].timestamp,
       },
-    }).then(() => setIsTracking());
+    }).then(() => {
+      refreshArchive();
+
+      setIsTracking();
+    });
   };
 
   return (

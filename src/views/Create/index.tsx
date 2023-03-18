@@ -8,10 +8,11 @@ import { styles } from './styles';
 import { TabProps } from '../../routes';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-export function CreateView({ route, navigation }: TabProps) {
+export function CreateView({ refreshArchive }: { refreshArchive: () => void }) {
   const [initialLocation, setInitialLocation] = useState<LocationObject>();
+  const [trackingLocation, setTrackingLocation] = useState<LocationObject>();
+
   const [isTracking, setIsTracking] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isTrackingReady, setIsTrackingReady] = useState<boolean>(false);
 
   useEffect(() => {
@@ -22,7 +23,10 @@ export function CreateView({ route, navigation }: TabProps) {
         alert('Permission to access location was denied');
         return;
       }
-      await Location.getCurrentPositionAsync();
+      const initLocation = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.BestForNavigation,
+      });
+      setInitialLocation(initLocation);
     }
     checkStatus();
   }, []);
@@ -31,7 +35,7 @@ export function CreateView({ route, navigation }: TabProps) {
     Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High,
     }).then((currLocation) => {
-      setInitialLocation(currLocation);
+      setTrackingLocation(currLocation);
       setIsTrackingReady(true);
     });
   };
@@ -44,16 +48,14 @@ export function CreateView({ route, navigation }: TabProps) {
 
   return (
     <SafeAreaView style={styles.container}>
-      {!isTracking && (
-        <>
+      {!isTracking && initialLocation && (
+        <View>
           <MapView
             style={styles.map}
             showsUserLocation
             mapType='hybrid'
-            showsScale
             provider={PROVIDER_GOOGLE}
             showsMyLocationButton
-            onMapLoaded={() => setIsLoading(false)}
             region={{
               latitude: initialLocation?.coords?.latitude!,
               longitude: initialLocation?.coords?.longitude!,
@@ -66,21 +68,21 @@ export function CreateView({ route, navigation }: TabProps) {
               style={styles.button}
               activeOpacity={0.9}
               onPress={() => startTracking()}
-              disabled={isLoading}
             >
               <MaterialCommunityIcons name='plus' size={48} />
             </TouchableOpacity>
           </View>
-        </>
+        </View>
       )}
 
       {isTracking && (
         <Tracking
-          initialLocation={initialLocation!}
+          initialLocation={trackingLocation!}
           setIsTracking={() => {
             setIsTracking(false);
             setIsTrackingReady(false);
           }}
+          refreshArchive={refreshArchive}
         />
       )}
     </SafeAreaView>
