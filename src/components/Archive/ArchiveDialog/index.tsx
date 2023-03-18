@@ -26,8 +26,6 @@ export const ArchiveDialog = ({
   const onSave = () => {
     if (newTitle.length > 0) {
       updateTripTitle(id, { title: newTitle }).then((x) => {
-        console.log('Successs');
-        console.log(x);
         setItems();
         setIsOpen(false);
       });
@@ -41,8 +39,6 @@ export const ArchiveDialog = ({
   const onDelete = () => {
     deleteTrip(id)
       .then((x) => {
-        console.log('Trip has been deleted');
-        console.log(x);
         setIsOpen(false);
         setItems();
       })
@@ -84,8 +80,8 @@ export const ArchiveDialog = ({
       Alert.alert('Sharing is not availble.');
     }
   };
-  console.log(image);
-  console.log(!!image);
+  // console.log(image);
+  // console.log(!!image);
 
   const dialogStyles = useMemo(() => (!!image ? { width: 300, height: 500 } : {}), [image]);
 

@@ -3,12 +3,12 @@ import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navig
 import React, { useState } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { auth } from '../../config/firebase';
+import { TripData } from '../api/useTrips';
 import { ArchiveView } from '../views/Archive';
 import { SignIn } from '../views/Auth/SignIn';
 import { SignUp } from '../views/Auth/SignUp';
 import { CreateView } from '../views/Create';
 import { SettingsView } from '../views/Settings';
-import { TripData } from '../api/useTrips';
 
 export type RootTabParamList = {
   Create: undefined;
@@ -75,7 +75,7 @@ export function Routes() {
           <Tab.Screen
             name='Create'
             options={{ tabBarIcon: () => CreateIcon }}
-            children={() => <CreateView refreshArchive={() => setItems} />}
+            children={() => <CreateView refreshArchive={() => setItems(undefined)} />}
           />
           <Tab.Screen
             name='Archive'

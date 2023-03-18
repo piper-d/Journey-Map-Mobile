@@ -33,7 +33,6 @@ export const useTrips = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const createTrip = async (data: TripDataInput) => {
-    console.log(data);
     try {
       const token = await AsyncStorage.getItem('accessToken');
       const response = await axios.post(

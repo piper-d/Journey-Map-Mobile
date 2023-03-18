@@ -85,7 +85,6 @@ export function Tracking({
       },
     }).then(() => {
       refreshArchive();
-
       setIsTracking();
     });
   };
