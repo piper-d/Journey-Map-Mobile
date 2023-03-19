@@ -6,14 +6,19 @@ import { ArchiveSummary } from '../../components/Archive/ArchiveSummary';
 import { TripData, useTrips } from '../../api/useTrips';
 import { useIsFocused } from '@react-navigation/native';
 
-export function ArchiveView({ route, navigation }: TabProps) {
+export function ArchiveView({
+  items,
+  setItems,
+}: {
+  items: TripData[] | undefined;
+  setItems: (x: TripData[] | undefined) => void;
+}) {
   const image = require('../../.././assets/topographic.png');
-
-  const [items, setItems] = useState<TripData[]>();
 
   const { isLoading, getAllTrips } = useTrips();
 
   const isFocused = useIsFocused();
+  // console.log(items !== undefined ? items : 'NOT LOADED');
 
   useEffect(() => {
     if (isFocused && items === undefined) {

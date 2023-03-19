@@ -1,14 +1,14 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NativeStackScreenProps, createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { auth } from '../../config/firebase';
+import { TripData } from '../api/useTrips';
 import { ArchiveView } from '../views/Archive';
 import { SignIn } from '../views/Auth/SignIn';
 import { SignUp } from '../views/Auth/SignUp';
 import { CreateView } from '../views/Create';
 import { SettingsView } from '../views/Settings';
-// import { User } from 'firebase/auth';
 
 export type RootTabParamList = {
   Create: undefined;
@@ -39,6 +39,7 @@ export type IUser = {
 
 export function Routes() {
   const [authorizedUser, setAuthorizedUser] = useState<boolean>();
+  const [items, setItems] = useState<TripData[]>();
 
   auth.onAuthStateChanged((user) => {
     if (!!user) {
@@ -48,6 +49,7 @@ export function Routes() {
     } else {
       // No user is signed in.
       setAuthorizedUser(false);
+      setItems(undefined);
     }
   });
 
@@ -72,13 +74,15 @@ export function Routes() {
         <Tab.Navigator initialRouteName='Create'>
           <Tab.Screen
             name='Create'
-            component={CreateView}
             options={{ tabBarIcon: () => CreateIcon }}
+            children={() => <CreateView refreshArchive={() => setItems(undefined)} />}
           />
           <Tab.Screen
             name='Archive'
-            component={ArchiveView}
             options={{ tabBarIcon: () => ArchiveIcon }}
+            children={() => (
+              <ArchiveView items={items} setItems={(x: TripData[] | undefined) => setItems(x)} />
+            )}
           />
           <Tab.Screen
             name='Settings'

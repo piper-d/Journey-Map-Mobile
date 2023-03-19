@@ -21,13 +21,11 @@ export const ArchiveDialog = ({
   const [newTitle, setNewTitle] = useState<string>('');
   const [image, setImage] = useState<string>('');
 
-  const { updateTripTitle, addTripMedia } = useTrips();
+  const { updateTripTitle, addTripMedia, deleteTrip } = useTrips();
 
   const onSave = () => {
     if (newTitle.length > 0) {
       updateTripTitle(id, { title: newTitle }).then((x) => {
-        console.log('Successs');
-        console.log(x);
         setItems();
         setIsOpen(false);
       });
@@ -36,6 +34,18 @@ export const ArchiveDialog = ({
     if (image?.length > 0) {
       addTripMedia(id, { image: image }).then((x) => {});
     }
+  };
+
+  const onDelete = () => {
+    deleteTrip(id)
+      .then((x) => {
+        setIsOpen(false);
+        setItems();
+      })
+      .catch((error) => {
+        console.log('error');
+        console.log(error);
+      });
   };
 
   const pickImage = async () => {
@@ -70,8 +80,8 @@ export const ArchiveDialog = ({
       Alert.alert('Sharing is not availble.');
     }
   };
-  console.log(image);
-  console.log(!!image);
+  // console.log(image);
+  // console.log(!!image);
 
   const dialogStyles = useMemo(() => (!!image ? { width: 300, height: 500 } : {}), [image]);
 
@@ -89,6 +99,7 @@ export const ArchiveDialog = ({
 
         <Dialog.Button label='Share Trip' onPress={() => shareTrip()} />
         <Dialog.Button label='Add Media' onPress={() => pickImage()} />
+        <Dialog.Button label='Delete Trip' onPress={() => onDelete()} />
         <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
         <Dialog.Button label='Save' onPress={() => onSave()} />
       </Dialog.Container>
