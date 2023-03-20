@@ -4,6 +4,7 @@ import { Text, View } from 'react-native';
 import Dialog from 'react-native-dialog';
 import { auth } from '../../../../config/firebase';
 import { styles } from './styles';
+import { Loader } from '../../custom/Loader';
 
 export const PasswordDialog = ({
   isOpen,
@@ -15,17 +16,16 @@ export const PasswordDialog = ({
   const [oldPassword, setOldPassword] = useState<string>();
   const [newPassword, setNewPassword] = useState<string>();
   const [errorMessage, setErrorMessage] = useState<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSave = async () => {
     if (newPassword !== undefined && oldPassword !== undefined && newPassword.length > 5) {
+      setIsLoading(true);
       const credential = EmailAuthProvider.credential(auth.currentUser!.email!, oldPassword);
       reauthenticateWithCredential(auth.currentUser!, credential)
         .then((userCred) => {
-          console.log(userCred);
           updatePassword(userCred.user, newPassword)
-            .then((x) => {
-              console.log('WORKED');
-              console.log(x);
+            .then(() => {
               setIsOpen(false);
             })
             .catch((error) => {
@@ -37,6 +37,7 @@ export const PasswordDialog = ({
           console.log('Error 2');
           setErrorMessage(error.message);
         });
+      setIsLoading(false);
     } else {
       console.log('Error 1');
       setErrorMessage('Password must be at least 6 characters');
@@ -47,20 +48,25 @@ export const PasswordDialog = ({
     <View>
       <Dialog.Container visible={isOpen}>
         <Dialog.Title>Change Password</Dialog.Title>
-        <Dialog.Input
-          placeholder={'Old Password'}
-          value={oldPassword}
-          onChange={(e) => setOldPassword(e.nativeEvent.text)}
-          secureTextEntry={false}
-          autoCapitalize={'none'}
-        />
-        <Dialog.Input
-          placeholder={'New Password'}
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.nativeEvent.text)}
-          secureTextEntry={false}
-          autoCapitalize={'none'}
-        />
+        {isLoading && <Loader style={{ marginBottom: 12 }} color={'#6A71E6'} />}
+        {!isLoading && (
+          <>
+            <Dialog.Input
+              placeholder={'Old Password'}
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.nativeEvent.text)}
+              secureTextEntry={false}
+              autoCapitalize={'none'}
+            />
+            <Dialog.Input
+              placeholder={'New Password'}
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.nativeEvent.text)}
+              secureTextEntry={false}
+              autoCapitalize={'none'}
+            />
+          </>
+        )}
         {!!errorMessage && (
           <View>
             <Text style={styles.error}>{errorMessage}</Text>

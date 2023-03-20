@@ -11,6 +11,7 @@ import { styles } from './styles';
 import * as ImagePicker from 'expo-image-picker';
 import { MetricsDisplay } from '../custom/MetricsDisplay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Loader } from '../custom/Loader';
 
 export type ITrackingObj = {
   currLocation: LocationObject;
@@ -36,6 +37,7 @@ export function Tracking({
   const [watcher, setWatcher] = useState<Location.LocationSubscription>();
   const [duration, setDuration] = useState(0);
   const [distance, setDistance] = useState(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const { createTrip } = useTrips();
 
@@ -71,6 +73,7 @@ export function Tracking({
     };
   }, []);
   const stopTracking = () => {
+    setIsLoading(true);
     watcher?.remove();
 
     createTrip({
@@ -85,6 +88,7 @@ export function Tracking({
       },
     }).then(() => {
       refreshArchive();
+      setIsLoading(false);
       setIsTracking();
     });
   };
@@ -122,12 +126,22 @@ export function Tracking({
           <MetricsDisplay header={'Average Speed:'} body={`${getAverageSpeed()} MPH`} />
         </View>
         <View style={styles.buttonsContainer}>
-          <TouchableOpacity style={styles.cameraButton} onPress={() => pickFromCamera()}>
-            <MaterialCommunityIcons name='camera' color='white' size={50} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.stopButton} onPress={() => stopTracking()}>
-            <MaterialCommunityIcons name='stop' color='white' size={42} />
-          </TouchableOpacity>
+          {!isLoading && (
+            <>
+              <TouchableOpacity style={styles.cameraButton} onPress={() => pickFromCamera()}>
+                <MaterialCommunityIcons name='camera' color='white' size={50} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.stopButton} onPress={() => stopTracking()}>
+                <MaterialCommunityIcons name='stop' color='white' size={42} />
+              </TouchableOpacity>
+            </>
+          )}
+          {isLoading && (
+            <Loader
+              color={'white'}
+              style={{ justifyContent: 'center', alignSelf: 'center', height: '100%' }}
+            />
+          )}
         </View>
       </ImageBackground>
     </SafeAreaView>

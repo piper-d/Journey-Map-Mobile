@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { ImageBackground, SafeAreaView, FlatList, View, Text } from 'react-native';
-import { TabProps } from '../../routes';
-import { styles } from './styles';
-import { ArchiveSummary } from '../../components/Archive/ArchiveSummary';
-import { TripData, useTrips } from '../../api/useTrips';
 import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect } from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  ImageBackground,
+  SafeAreaView,
+  Text,
+  View,
+} from 'react-native';
+import { TripData, useTrips } from '../../api/useTrips';
+import { ArchiveSummary } from '../../components/Archive/ArchiveSummary';
+import { styles } from './styles';
+import { Loader } from '../../components/custom/Loader';
 
 export function ArchiveView({
   items,
@@ -15,13 +22,14 @@ export function ArchiveView({
 }) {
   const image = require('../../.././assets/topographic.png');
 
-  const { isLoading, getAllTrips } = useTrips();
+  const { isLoading, setIsLoading, getAllTrips } = useTrips();
 
   const isFocused = useIsFocused();
   // console.log(items !== undefined ? items : 'NOT LOADED');
 
   useEffect(() => {
     if (isFocused && items === undefined) {
+      setIsLoading(true);
       getAllTrips().then((x) => {
         if (x !== undefined) {
           setItems(x);
@@ -34,7 +42,7 @@ export function ArchiveView({
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.image} source={image} resizeMode='cover'>
         <>
-          {isLoading && <Text style={styles.text}>LOADING</Text>}
+          {isLoading && <Loader />}
 
           {!isLoading && items === undefined && (
             <Text style={styles.text}>

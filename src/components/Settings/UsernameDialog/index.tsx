@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import Dialog from 'react-native-dialog';
 import { useUser } from '../../../api/useUser';
+import { Loader } from '../../custom/Loader';
 
 export const UsernameDialog = ({
   isOpen,
@@ -31,18 +32,15 @@ export const UsernameDialog = ({
 
   const onSave = () => {
     if (newUsername.length > 0) {
+      setIsLoading(true);
       changeUsername({ username: newUsername }).then(() => {
+        setIsLoading(false);
         setIsOpen(false);
       });
     }
   };
 
-  if (isLoading && username === undefined)
-    return (
-      <View>
-        <Text>LOADING</Text>
-      </View>
-    );
+  if (isLoading && username === undefined) return <Loader />;
 
   return (
     <View>
@@ -53,6 +51,7 @@ export const UsernameDialog = ({
           value={newUsername}
           onChange={(e) => setNewUsername(e.nativeEvent.text)}
         />
+        {isLoading && username !== undefined && <Loader />}
         <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
         <Dialog.Button label='Save' onPress={() => onSave()} />
       </Dialog.Container>

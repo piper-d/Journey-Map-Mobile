@@ -170,5 +170,14 @@ export const useTrips = () => {
     }
   };
 
-  return { isLoading, getAllTrips, getTrip, createTrip, updateTripTitle, addTripMedia, deleteTrip };
+  return {
+    isLoading,
+    setIsLoading: (x: boolean) => setIsLoading(x),
+    getAllTrips,
+    getTrip,
+    createTrip,
+    updateTripTitle,
+    addTripMedia,
+    deleteTrip,
+  };
 };
