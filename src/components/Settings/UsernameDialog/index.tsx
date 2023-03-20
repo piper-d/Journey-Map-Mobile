@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 import Dialog from 'react-native-dialog';
 import { useUser } from '../../../api/useUser';
 import { Loader } from '../../custom/Loader';
+import { styles } from './styles';
 
 export const UsernameDialog = ({
   isOpen,
@@ -12,11 +13,12 @@ export const UsernameDialog = ({
   setIsOpen: (x: boolean) => void;
 }) => {
   const [newUsername, setNewUsername] = useState<string>('');
-
   const [username, setUsername] = useState<string>();
 
-  const { getUser, changeUsername } = useUser();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [errorMessage, setErrorMessage] = useState<string>();
+
+  const { getUser, changeUsername } = useUser();
 
   useEffect(() => {
     if (isOpen) {
@@ -37,6 +39,8 @@ export const UsernameDialog = ({
         setIsLoading(false);
         setIsOpen(false);
       });
+    } else {
+      setErrorMessage('A new username must be entered');
     }
   };
 
@@ -51,6 +55,11 @@ export const UsernameDialog = ({
           value={newUsername}
           onChange={(e) => setNewUsername(e.nativeEvent.text)}
         />
+        {!!errorMessage && (
+          <View>
+            <Text style={styles.error}>{errorMessage}</Text>
+          </View>
+        )}
         {isLoading && username !== undefined && <Loader />}
         <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
         <Dialog.Button label='Save' onPress={() => onSave()} />
