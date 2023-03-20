@@ -25,7 +25,6 @@ export function ArchiveView({
   const { isLoading, setIsLoading, getAllTrips } = useTrips();
 
   const isFocused = useIsFocused();
-  // console.log(items !== undefined ? items : 'NOT LOADED');
 
   useEffect(() => {
     if (isFocused && items === undefined) {
