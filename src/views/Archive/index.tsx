@@ -1,17 +1,10 @@
 import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  ImageBackground,
-  SafeAreaView,
-  Text,
-  View,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ImageBackground, SafeAreaView, Text } from 'react-native';
 import { TripData, useTrips } from '../../api/useTrips';
 import { ArchiveSummary } from '../../components/Archive/ArchiveSummary';
-import { styles } from './styles';
 import { Loader } from '../../components/custom/Loader';
+import { styles } from './styles';
 
 export function ArchiveView({
   items,
@@ -23,8 +16,8 @@ export function ArchiveView({
   const image = require('../../.././assets/topographic.png');
 
   const { isLoading, setIsLoading, getAllTrips } = useTrips();
-
   const isFocused = useIsFocused();
+  const [isInitalLoad, setIsInitialLoad] = useState<boolean>(true);
 
   useEffect(() => {
     if (isFocused && items === undefined) {
@@ -33,6 +26,7 @@ export function ArchiveView({
         if (x !== undefined) {
           setItems(x);
         }
+        setIsInitialLoad(false);
       });
     }
   }, [isFocused, items]);
@@ -43,7 +37,7 @@ export function ArchiveView({
         <>
           {isLoading && <Loader />}
 
-          {!isLoading && items === undefined && (
+          {!isLoading && isInitalLoad && items === undefined && (
             <Text style={styles.text}>
               You currently have no trips. Add a trip and return to see a summary!
             </Text>
