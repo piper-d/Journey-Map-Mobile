@@ -19,6 +19,7 @@ export default {
     },
     assetBundlePatterns: ['**/*'],
     ios: {
+      bundleIdentifier: 'com.JourneyMap',
       supportsTablet: true,
       infoPlist: {
         NSCameraUsageDescription: 'Your camera is used to add media to the trip.',
@@ -35,7 +36,7 @@ export default {
       },
       package: 'com.JourneyMap',
       versionCode: 1,
-      Permissions: [
+      permissions: [
         'CAMERA',
         'ACCESS_FINE_LOCATION',
         'ACCESS_COARSE_LOCATION',
