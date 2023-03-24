@@ -1,9 +1,9 @@
-import React, { useMemo, useState } from 'react';
-import { View, Image, Alert } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import React, { useState } from 'react';
+import { Alert, View } from 'react-native';
 import Dialog from 'react-native-dialog';
 import { useTrips } from '../../../api/useTrips';
-import * as ImagePicker from 'expo-image-picker';
-import * as Sharing from 'expo-sharing';
+import { MediaDisplay } from '../../custom/MediaDisplay';
 
 export const ArchiveDialog = ({
   id,
@@ -19,9 +19,24 @@ export const ArchiveDialog = ({
   setItems: () => void;
 }) => {
   const [newTitle, setNewTitle] = useState<string>('');
-  const [image, setImage] = useState<string>('');
+  const [media, setMedia] = useState<string[]>();
 
   const { updateTripTitle, addTripMedia, deleteTrip } = useTrips();
+
+  const addMedia = (mediaUrl: string) => {
+    setMedia((prevMedia) => {
+      if (prevMedia === undefined) {
+        return [mediaUrl];
+      }
+      return [...prevMedia, mediaUrl];
+    });
+  };
+
+  const removeMedia = (mediaUrl: string) => {
+    setMedia((prevMedia) => {
+      return prevMedia?.filter((x) => x !== mediaUrl);
+    });
+  };
 
   const onSave = () => {
     if (newTitle.length > 0) {
@@ -30,9 +45,9 @@ export const ArchiveDialog = ({
         setIsOpen(false);
       });
     }
-
-    if (image?.length > 0) {
-      addTripMedia(id, { image: image }).then((x) => {});
+    // for loop all trips
+    if (media !== undefined && media[0]?.length > 0) {
+      addTripMedia(id, { media: media[0] }).then((x) => {});
     }
   };
 
@@ -46,27 +61,6 @@ export const ArchiveDialog = ({
         console.log('error');
         console.log(error);
       });
-  };
-
-  const pickImage = async () => {
-    const response = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (response.granted) {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-        quality: 1,
-      });
-
-      // console.log(result);
-
-      if (!result.canceled) {
-        setImage(result.assets[0].uri);
-      }
-    } else {
-      Alert.alert('The app needs permission to access the camera. Please change this in settings.');
-    }
   };
 
   const shareTrip = async () => {
@@ -83,11 +77,15 @@ export const ArchiveDialog = ({
   // console.log(image);
   // console.log(!!image);
 
-  const dialogStyles = useMemo(() => (!!image ? { width: 300, height: 500 } : {}), [image]);
+  // const dialogStyles = useMemo(() => (media ? { width: 330, height: 560 } : {}), [media]);
 
   return (
     <View>
-      <Dialog.Container visible={isOpen} verticalButtons={true} contentStyle={dialogStyles}>
+      <Dialog.Container
+        visible={isOpen}
+        verticalButtons={true}
+        contentStyle={{ width: 330, height: 560 }}
+      >
         <Dialog.Title>Edit Trip</Dialog.Title>
         <Dialog.Description>Change the title or add/remove media</Dialog.Description>
         <Dialog.Input
@@ -95,7 +93,12 @@ export const ArchiveDialog = ({
           value={newTitle}
           onChange={(e) => setNewTitle(e.nativeEvent.text)}
         />
-        {image.length > 0 && <Image source={{ uri: image }} style={{ width: 100, height: 200 }} />}
+        {/* {image.length > 0 && <Image source={{ uri: image }} style={{ width: 100, height: 200 }} />} */}
+        <MediaDisplay
+          media={media}
+          addMedia={(x: string) => addMedia(x)}
+          removeMedia={(x: string) => removeMedia(x)}
+        />
 
         <Dialog.Button label='Share Trip' onPress={() => shareTrip()} />
         <Dialog.Button label='Add Media' onPress={() => pickImage()} />

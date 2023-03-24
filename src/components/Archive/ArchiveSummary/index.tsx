@@ -83,7 +83,8 @@ export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: ()
                 ...latLngDelta,
               }}
             >
-              <Polyline coordinates={latLngCoords} strokeWidth={5} strokeColor='white' />
+              <Polyline coordinates={latLngCoords} strokeWidth={5} strokeColor='black' />
+              <Polyline coordinates={latLngCoords} strokeWidth={3} strokeColor='white' />
             </MapView>
           </View>
           <Text

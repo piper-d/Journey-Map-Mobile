@@ -138,12 +138,12 @@ export const useTrips = () => {
     }
   };
 
-  const addTripMedia = async (id: string, data: { image: string }) => {
+  const addTripMedia = async (id: string, data: { media: string }) => {
     try {
       const formData = new FormData();
       formData.append('latitude', '69');
       formData.append('longitude', '69');
-      formData.append('image', data.image);
+      formData.append('media', data.media);
 
       const token = await AsyncStorage.getItem('accessToken');
       console.log(`/trips/${id}/media`);
