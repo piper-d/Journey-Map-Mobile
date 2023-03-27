@@ -6,7 +6,7 @@ export default {
     name: 'Journey-Map-Mobile',
     slug: 'journey-map-mobile',
     privacy: 'hidden',
-    version: '1.0.2',
+    version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/JourneyMap.png',
     entryPoint: 'App.tsx',
@@ -22,7 +22,7 @@ export default {
     ios: {
       bundleIdentifier: 'com.JourneyMap',
       supportsTablet: true,
-      buildNumber: '1.0.2',
+      buildNumber: '5',
       infoPlist: {
         NSCameraUsageDescription: 'Your camera is used to add media to the trip.',
         NSLocationWhenInUseUsageDescription:
@@ -32,6 +32,7 @@ export default {
       },
       config: {
         usesNonExemptEncryption: false,
+        googleMapsApiKey: process.env.iosGoogleMapsApiKey,
       },
     },
     android: {
@@ -48,6 +49,11 @@ export default {
         'READ_MEDIA_IMAGES',
         'READ_MEDIA_VIDEO',
       ],
+      config: {
+        googleMaps: {
+          apiKey: process.env.androidGoogleMapsApiKey,
+        },
+      },
     },
     web: {
       favicon: './assets/favicon.png',
