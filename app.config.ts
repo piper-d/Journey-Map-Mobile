@@ -6,7 +6,7 @@ export default {
     name: 'Journey-Map-Mobile',
     slug: 'journey-map-mobile',
     privacy: 'hidden',
-    version: '1.0.0',
+    version: '1.0.1',
     orientation: 'portrait',
     icon: './assets/icon.png',
     entryPoint: 'App.tsx',
