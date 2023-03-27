@@ -9,6 +9,7 @@ export default {
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
+    entryPoint: 'App.tsx',
     splash: {
       image: './assets/splash.png',
       resizeMode: 'contain',

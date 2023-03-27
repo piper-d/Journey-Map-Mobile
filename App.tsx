@@ -1,11 +1,14 @@
 import React from 'react';
 import { Routes } from './src/routes';
 import { NavigationContainer } from '@react-navigation/native';
+import { registerRootComponent } from 'expo';
 
-export default function App() {
+function App() {
   return (
     <NavigationContainer>
       <Routes />
     </NavigationContainer>
   );
 }
+
+export default registerRootComponent(App);
