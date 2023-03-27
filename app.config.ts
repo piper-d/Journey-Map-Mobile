@@ -6,14 +6,14 @@ export default {
     name: 'Journey-Map-Mobile',
     slug: 'journey-map-mobile',
     privacy: 'hidden',
-    version: '1.0.1',
+    version: '1.0.2',
     orientation: 'portrait',
-    icon: './assets/icon.png',
+    icon: './assets/JourneyMap.png',
     entryPoint: 'App.tsx',
     splash: {
-      image: './assets/splash.png',
+      image: './assets/JourneyMap.png',
       resizeMode: 'contain',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#212531',
     },
     updates: {
       fallbackToCacheTimeout: 0,
@@ -22,6 +22,7 @@ export default {
     ios: {
       bundleIdentifier: 'com.JourneyMap',
       supportsTablet: true,
+      buildNumber: '1.0.2',
       infoPlist: {
         NSCameraUsageDescription: 'Your camera is used to add media to the trip.',
         NSLocationWhenInUseUsageDescription:
