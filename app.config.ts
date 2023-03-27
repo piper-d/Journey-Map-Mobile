@@ -28,6 +28,9 @@ export default {
         NSPhotoLibraryUsageDescription:
           'Your library is used to add media to previously created trips.',
       },
+      config: {
+        usesNonExemptEncryption: false,
+      },
     },
     android: {
       adaptiveIcon: {
@@ -49,8 +52,9 @@ export default {
     },
     extra: {
       eas: {
-        projectId: 'd1c4048d-daf6-4a12-98e5-8b17782dc8d4',
+        projectId: process.env.easProjectId,
       },
+      // Firebase
       apiKey: process.env.apiKey,
       authDomain: process.env.authDomain,
       projectId: process.env.projectId,
