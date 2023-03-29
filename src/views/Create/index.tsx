@@ -1,12 +1,11 @@
 import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
 import React, { useEffect, useState } from 'react';
-import { Button, Pressable, SafeAreaView, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, TouchableOpacity, View, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Tracking } from '../../components/Create';
 import { styles } from './styles';
-import { TabProps } from '../../routes';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export function CreateView({ refreshArchive }: { refreshArchive: () => void }) {
   const [initialLocation, setInitialLocation] = useState<LocationObject>();
@@ -14,12 +13,16 @@ export function CreateView({ refreshArchive }: { refreshArchive: () => void }) {
 
   const [isTracking, setIsTracking] = useState<boolean>(false);
   const [isTrackingReady, setIsTrackingReady] = useState<boolean>(false);
+  const [status, setStatus] = useState<boolean>();
 
   useEffect(() => {
     async function checkStatus() {
       let { status } = await Location.requestForegroundPermissionsAsync();
 
-      if (status !== 'granted') {
+      const isStatusGranted = status === 'granted' ? true : false;
+      setStatus(isStatusGranted);
+
+      if (!isStatusGranted) {
         alert('Permission to access location was denied');
         return;
       }
@@ -45,6 +48,16 @@ export function CreateView({ refreshArchive }: { refreshArchive: () => void }) {
       setIsTracking(true);
     }
   }, [isTrackingReady]);
+
+  if (!status)
+    return (
+      <View>
+        <Text>
+          Permission to access location was denied. If you wish to use this feature change it in
+          your settings.
+        </Text>
+      </View>
+    );
 
   return (
     <SafeAreaView style={styles.container}>
