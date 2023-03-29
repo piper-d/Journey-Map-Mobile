@@ -1,13 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { signOut, deleteUser } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import React, { useState } from 'react';
 import { ImageBackground, Pressable, SafeAreaView, Text, View } from 'react-native';
 import { auth } from '../../../config/firebase';
+import { DeleteDialog } from '../../components/Settings/DeleteDialog';
 import { PasswordDialog } from '../../components/Settings/PasswordDialog';
 import { UsernameDialog } from '../../components/Settings/UsernameDialog';
 import { IUser } from '../../routes';
 import { styles } from './styles';
-import { DeleteDialog } from '../../components/Settings/DeleteDialog';
 
 export function SettingsView({ setAuthorizedUser }: Omit<IUser, 'authorizedUser'>) {
   const image = require('../../.././assets/topographic.png');
