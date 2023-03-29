@@ -7,7 +7,7 @@ import { TripData } from '../api/useTrips';
 import { ArchiveView } from '../views/Archive';
 import { SignIn } from '../views/Auth/SignIn';
 import { SignUp } from '../views/Auth/SignUp';
-import { CreateView } from '../views/Create';
+import { StartView } from '../views/Create/Start';
 import { SettingsView } from '../views/Settings';
 
 export type RootTabParamList = {
@@ -75,7 +75,7 @@ export function Routes() {
           <Tab.Screen
             name='Create'
             options={{ tabBarIcon: () => CreateIcon }}
-            children={() => <CreateView refreshArchive={() => setItems(undefined)} />}
+            children={() => <StartView refreshArchive={() => setItems(undefined)} />}
           />
           <Tab.Screen
             name='Archive'

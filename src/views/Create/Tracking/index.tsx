@@ -4,14 +4,14 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Alert, ImageBackground, SafeAreaView, TouchableOpacity, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import { useTrips } from '../../api/useTrips';
-import { getTrackingFunction } from '../../hooks/useTrackingFunctions';
+import { useTrips } from '../../../api/useTrips';
+import { getTrackingFunction } from '../../../hooks/useTrackingFunctions';
 import { styles } from './styles';
 
 import * as ImagePicker from 'expo-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Loader } from '../custom/Loader';
-import { MetricsDisplay } from '../custom/MetricsDisplay';
+import { Loader } from '../../../components/custom/Loader';
+import { MetricsDisplay } from '../../../components/custom/MetricsDisplay';
 
 export type ITrackingObj = {
   currLocation: LocationObject;

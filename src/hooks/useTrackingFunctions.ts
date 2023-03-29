@@ -3,7 +3,7 @@ import { getDistance } from 'geolib';
 import moment from 'moment';
 import { useCallback, useEffect } from 'react';
 import { LatLng } from 'react-native-maps';
-import { ITrackingObj } from '../components/Create';
+import { ITrackingObj } from '../views/Create/Tracking';
 import { TripDataInput } from '../api/useTrips';
 
 const fakeCoords: Location.LocationObject[] = [
