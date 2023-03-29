@@ -2,8 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    // width: 330,
-    // height: 560,
+    width: 330,
   },
   deleteIcon: {
     position: 'absolute',
