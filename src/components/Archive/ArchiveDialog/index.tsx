@@ -1,9 +1,11 @@
 import * as Sharing from 'expo-sharing';
 import React, { useState } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, TouchableOpacity, View } from 'react-native';
 import Dialog from 'react-native-dialog';
 import { useTrips } from '../../../api/useTrips';
 import { MediaDisplay } from '../../custom/MediaDisplay';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { styles } from './styles';
 
 export const ArchiveDialog = ({
   id,
@@ -20,6 +22,7 @@ export const ArchiveDialog = ({
 }) => {
   const [newTitle, setNewTitle] = useState<string>('');
   const [media, setMedia] = useState<string[]>();
+  const [isDelete, setIsDelete] = useState<boolean>(false);
 
   const { updateTripTitle, addTripMedia, deleteTrip } = useTrips();
 
@@ -74,38 +77,44 @@ export const ArchiveDialog = ({
       Alert.alert('Sharing is not availble.');
     }
   };
-  // console.log(image);
-  // console.log(!!image);
-
-  // const dialogStyles = useMemo(() => (media ? { width: 330, height: 560 } : {}), [media]);
 
   return (
     <View>
-      <Dialog.Container
-        visible={isOpen}
-        verticalButtons={true}
-        contentStyle={{ width: 330, height: 560 }}
-      >
-        <Dialog.Title>Edit Trip</Dialog.Title>
-        <Dialog.Description>Change the title or add/remove media</Dialog.Description>
-        <Dialog.Input
-          placeholder={title}
-          value={newTitle}
-          onChange={(e) => setNewTitle(e.nativeEvent.text)}
-        />
-        {/* {image.length > 0 && <Image source={{ uri: image }} style={{ width: 100, height: 200 }} />} */}
-        <MediaDisplay
-          media={media}
-          addMedia={(x: string) => addMedia(x)}
-          removeMedia={(x: string) => removeMedia(x)}
-        />
+      {!isDelete && (
+        <Dialog.Container visible={isOpen} contentStyle={styles.container}>
+          <Dialog.Title>Edit Trip</Dialog.Title>
+          <TouchableOpacity style={styles.deleteIcon} onPress={() => setIsDelete(true)}>
+            <MaterialCommunityIcons name='delete-outline' color={'grey'} size={30} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.shareIcon} onPress={() => shareTrip()}>
+            <MaterialCommunityIcons name='export-variant' color={'grey'} size={27} />
+          </TouchableOpacity>
+          <Dialog.Description>Change the title or add/remove media</Dialog.Description>
+          <Dialog.Input
+            placeholder={title}
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.nativeEvent.text)}
+          />
+          <MediaDisplay
+            media={media}
+            addMedia={(x: string) => addMedia(x)}
+            removeMedia={(x: string) => removeMedia(x)}
+          />
 
-        <Dialog.Button label='Share Trip' onPress={() => shareTrip()} />
-        <Dialog.Button label='Add Media' onPress={() => pickImage()} />
-        <Dialog.Button label='Delete Trip' onPress={() => onDelete()} />
-        <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
-        <Dialog.Button label='Save' onPress={() => onSave()} />
-      </Dialog.Container>
+          <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
+          <Dialog.Button label='Save' onPress={() => onSave()} />
+        </Dialog.Container>
+      )}
+      {isDelete && (
+        <Dialog.Container visible={isDelete}>
+          <Dialog.Title>Delete Trip</Dialog.Title>
+          <Dialog.Description>
+            Are you sure you want to delete this trip? This is permament and cannot be reversed
+          </Dialog.Description>
+          <Dialog.Button label='Go back' onPress={() => setIsDelete(false)} />
+          <Dialog.Button label='Confirm' onPress={() => onDelete()} />
+        </Dialog.Container>
+      )}
     </View>
   );
 };
