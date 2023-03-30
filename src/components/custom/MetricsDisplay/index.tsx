@@ -6,7 +6,9 @@ export const MetricsDisplay = ({ header, body }: { header: string; body: string 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{header}</Text>
-      <Text style={styles.body}>{body}</Text>
+      <Text adjustsFontSizeToFit={true} numberOfLines={1} style={styles.body}>
+        {body}
+      </Text>
     </View>
   );
 };

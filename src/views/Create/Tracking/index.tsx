@@ -131,13 +131,13 @@ export function TrackingView({
         </View>
 
         <View style={styles.metricsContainer}>
-          <MetricsDisplay header={'Distance:'} body={`${Math.round(distance * 1000) / 1000} Mi`} />
+          <MetricsDisplay header={'Distance:'} body={`${Math.round(distance * 100) / 100} Mi`} />
           <MetricsDisplay
             header={'Duration:'}
             body={`${moment.utc(duration * 1000).format('HH:mm:ss')}`}
           />
-          <MetricsDisplay header={'Current Speed:'} body={`${getCurentSpeed()} MPH`} />
-          <MetricsDisplay header={'Average Speed:'} body={`${getAverageSpeed()} MPH`} />
+          <MetricsDisplay header={'Current Pace:'} body={`${getCurentSpeed()}`} />
+          <MetricsDisplay header={'Average Pace:'} body={`${getAverageSpeed()}`} />
         </View>
         <View style={styles.buttonsContainer}>
           {!isLoading && (

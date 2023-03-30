@@ -15,10 +15,11 @@ export const styles = StyleSheet.create({
     fontSize: 18,
   },
   body: {
-    flex: 1,
     paddingTop: 10,
     color: 'white',
     textAlign: 'center',
-    fontSize: 36,
+    fontSize: 48,
+    left: '5%',
+    width: '90%',
   },
 });

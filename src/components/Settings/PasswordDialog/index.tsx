@@ -55,14 +55,14 @@ export const PasswordDialog = ({
               placeholder={'Old Password'}
               value={oldPassword}
               onChange={(e) => setOldPassword(e.nativeEvent.text)}
-              secureTextEntry={false}
+              secureTextEntry={true}
               autoCapitalize={'none'}
             />
             <Dialog.Input
               placeholder={'New Password'}
               value={newPassword}
               onChange={(e) => setNewPassword(e.nativeEvent.text)}
-              secureTextEntry={false}
+              secureTextEntry={true}
               autoCapitalize={'none'}
             />
           </>
