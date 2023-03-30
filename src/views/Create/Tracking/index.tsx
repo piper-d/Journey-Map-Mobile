@@ -2,17 +2,16 @@ import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Alert, ImageBackground, SafeAreaView, TouchableOpacity, View, Text } from 'react-native';
+import { ImageBackground, SafeAreaView, Text, TouchableOpacity, View } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { useTrips } from '../../../api/useTrips';
 import { getTrackingFunction } from '../../../hooks/useTrackingFunctions';
 import { styles } from './styles';
 
-import * as ImagePicker from 'expo-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { CameraDialog } from '../../../components/Create/CameraDialog';
 import { Loader } from '../../../components/custom/Loader';
 import { MetricsDisplay } from '../../../components/custom/MetricsDisplay';
-import { CameraDialog } from '../../../components/Create/CameraDialog';
 import { useMedia } from '../../../hooks/useMedia';
 
 export type ITrackingObj = {
@@ -164,20 +163,3 @@ export function TrackingView({
     </SafeAreaView>
   );
 }
-
-const pickFromCamera = async () => {
-  const result = await ImagePicker.requestCameraPermissionsAsync();
-  if (result.granted) {
-    let data = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
-    if (!data.canceled) {
-      console.log(data.assets);
-    }
-  } else {
-    Alert.alert('The app needs permission to access the camera. Please change this in settings.');
-  }
-};

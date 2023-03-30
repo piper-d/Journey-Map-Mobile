@@ -85,6 +85,7 @@ export const ArchiveDialog = ({
             media={media}
             addMedia={(x: string) => addMedia(x)}
             removeMedia={(x: string) => removeMedia(x)}
+            type={'Library'}
           />
 
           <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />

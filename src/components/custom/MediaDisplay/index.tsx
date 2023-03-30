@@ -4,14 +4,18 @@ import { AddMedia } from './AddMedia';
 import { styles } from './styles';
 import { ViewMedia } from './ViewMedia';
 
+export type CameraType = 'Camera' | 'Library';
+
 export const MediaDisplay = ({
   media,
   addMedia,
   removeMedia,
+  type,
 }: {
   media: string[] | undefined;
   addMedia: (mediaURL: string) => void;
   removeMedia: (mediaURL: string) => void;
+  type: CameraType;
 }) => {
   const mediaLength = media ? media.length : 0;
 
@@ -23,7 +27,7 @@ export const MediaDisplay = ({
         data={['addMedia', ...(media ?? [])]}
         renderItem={({ index, item }) => {
           if (index == 0) {
-            return <AddMedia mediaLength={mediaLength} addMedia={addMedia} />;
+            return <AddMedia mediaLength={mediaLength} addMedia={addMedia} type={type} />;
           }
 
           return <ViewMedia uri={item} removeMedia={removeMedia} />;

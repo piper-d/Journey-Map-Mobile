@@ -19,7 +19,7 @@ export const CameraDialog = ({
   return (
     <Dialog.Container visible={isOpen}>
       <Dialog.Title>Add Media</Dialog.Title>
-      <MediaDisplay media={media} addMedia={addMedia} removeMedia={removeMedia} />
+      <MediaDisplay media={media} addMedia={addMedia} removeMedia={removeMedia} type={'Camera'} />
       <Dialog.Button label={'Go back'} onPress={() => setIsOpen(false)} />
       {/* <Dialog.Button label={"Save"} onPress={() => setIsOpen(false) }/> */}
     </Dialog.Container>
