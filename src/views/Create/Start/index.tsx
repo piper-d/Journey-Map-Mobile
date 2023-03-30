@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { SafeAreaView, TouchableOpacity, View, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Tracking } from '../Tracking';
+import { TrackingView } from '../Tracking';
 import { styles } from './styles';
 
 export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
@@ -89,7 +89,7 @@ export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
       )}
 
       {isTracking && (
-        <Tracking
+        <TrackingView
           initialLocation={trackingLocation!}
           setIsTracking={() => {
             setIsTracking(false);

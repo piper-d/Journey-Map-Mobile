@@ -2,7 +2,7 @@ import * as Location from 'expo-location';
 import { LocationObject } from 'expo-location';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Alert, ImageBackground, SafeAreaView, TouchableOpacity, View } from 'react-native';
+import { Alert, ImageBackground, SafeAreaView, TouchableOpacity, View, Text } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { useTrips } from '../../../api/useTrips';
 import { getTrackingFunction } from '../../../hooks/useTrackingFunctions';
@@ -12,13 +12,15 @@ import * as ImagePicker from 'expo-image-picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Loader } from '../../../components/custom/Loader';
 import { MetricsDisplay } from '../../../components/custom/MetricsDisplay';
+import { CameraDialog } from '../../../components/Create/CameraDialog';
+import { useMedia } from '../../../hooks/useMedia';
 
 export type ITrackingObj = {
   currLocation: LocationObject;
   locationArray: LocationObject[];
 };
 
-export function Tracking({
+export function TrackingView({
   initialLocation,
   setIsTracking,
   refreshArchive,
@@ -27,7 +29,7 @@ export function Tracking({
   setIsTracking: () => void;
   refreshArchive: () => void;
 }) {
-  const image = require('../../.././assets/topographic.png');
+  const image = require('../../../.././assets/topographic.png');
 
   const [location, setLocation] = useState<ITrackingObj>({
     currLocation: initialLocation,
@@ -38,8 +40,11 @@ export function Tracking({
   const [duration, setDuration] = useState(0);
   const [distance, setDistance] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
 
   const { createTrip } = useTrips();
+
+  const { media, addMedia, removeMedia } = useMedia();
 
   const {
     options,
@@ -96,6 +101,15 @@ export function Tracking({
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.image} source={image} resizeMode='cover'>
+        {isCameraOpen && (
+          <CameraDialog
+            media={media}
+            addMedia={addMedia}
+            removeMedia={removeMedia}
+            isOpen={isCameraOpen}
+            setIsOpen={(x: boolean) => setIsCameraOpen(x)}
+          />
+        )}
         <View style={styles.mapContainer}>
           <MapView
             style={styles.map}
@@ -128,8 +142,11 @@ export function Tracking({
         <View style={styles.buttonsContainer}>
           {!isLoading && (
             <>
-              <TouchableOpacity style={styles.cameraButton} onPress={() => pickFromCamera()}>
+              <TouchableOpacity style={styles.cameraButton} onPress={() => setIsCameraOpen(true)}>
                 <MaterialCommunityIcons name='camera' color='white' size={50} />
+                <View style={styles.imageLength}>
+                  <Text style={{ color: 'grey' }}>{media === undefined ? 0 : media.length}</Text>
+                </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.stopButton} onPress={() => stopTracking()}>
                 <MaterialCommunityIcons name='stop' color='white' size={42} />

@@ -6,6 +6,7 @@ import { useTrips } from '../../../api/useTrips';
 import { MediaDisplay } from '../../custom/MediaDisplay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles } from './styles';
+import { useMedia } from '../../../hooks/useMedia';
 
 export const ArchiveDialog = ({
   id,
@@ -20,26 +21,11 @@ export const ArchiveDialog = ({
   setIsOpen: (x: boolean) => void;
   setItems: () => void;
 }) => {
-  const [newTitle, setNewTitle] = useState<string>('');
-  const [media, setMedia] = useState<string[]>();
-  const [isDelete, setIsDelete] = useState<boolean>(false);
-
   const { updateTripTitle, addTripMedia, deleteTrip } = useTrips();
+  const { media, addMedia, removeMedia } = useMedia();
 
-  const addMedia = (mediaUrl: string) => {
-    setMedia((prevMedia) => {
-      if (prevMedia === undefined) {
-        return [mediaUrl];
-      }
-      return [...prevMedia, mediaUrl];
-    });
-  };
-
-  const removeMedia = (mediaUrl: string) => {
-    setMedia((prevMedia) => {
-      return prevMedia?.filter((x) => x !== mediaUrl);
-    });
-  };
+  const [newTitle, setNewTitle] = useState<string>('');
+  const [isDelete, setIsDelete] = useState<boolean>(false);
 
   const onSave = () => {
     if (newTitle.length > 0) {

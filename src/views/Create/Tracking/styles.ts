@@ -56,4 +56,17 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
   },
+  imageLength: {
+    position: 'absolute',
+    backgroundColor: 'white',
+    right: -8,
+    top: -8,
+    height: 25,
+    width: 25,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: 'grey',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
