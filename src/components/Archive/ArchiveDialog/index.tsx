@@ -6,23 +6,30 @@ import { useTrips } from '../../../api/useTrips';
 import { MediaDisplay } from '../../custom/MediaDisplay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles } from './styles';
-import { useMedia } from '../../../hooks/useMedia';
 
 export const ArchiveDialog = ({
   id,
   title,
+  media,
+  oldMedia,
   isOpen,
+  addMedia,
+  removeMedia,
   setIsOpen,
   setItems,
 }: {
   id: string;
   title: string;
+  media: string[] | undefined;
+  oldMedia: string[] | undefined;
   isOpen: boolean;
+  addMedia: (x: string) => void;
+  removeMedia: (x: string) => void;
   setIsOpen: (x: boolean) => void;
+
   setItems: () => void;
 }) => {
   const { updateTripTitle, addTripMedia, deleteTrip } = useTrips();
-  const { media, addMedia, removeMedia } = useMedia();
 
   const [newTitle, setNewTitle] = useState<string>('');
   const [isDelete, setIsDelete] = useState<boolean>(false);
@@ -35,8 +42,23 @@ export const ArchiveDialog = ({
       });
     }
     // for loop all trips
-    if (media !== undefined && media[0]?.length > 0) {
-      addTripMedia(id, { media: media[0] }).then((x) => {});
+    const newMedia = media?.filter((item) => !oldMedia?.includes(item));
+    const removeOldMedia = oldMedia?.filter((item) => !media?.includes(item));
+
+    console.log('newMedia');
+    console.log(newMedia);
+
+    console.log('removeOldMedia');
+    console.log(removeOldMedia);
+
+    if (newMedia !== undefined && newMedia.length > 0) {
+      for (var i = 0; i < newMedia.length; i++) {
+        addTripMedia(id, { media: newMedia[i] }).then((x) => {});
+      }
+    }
+
+    if (removeOldMedia !== undefined && removeOldMedia.length > 0) {
+      //removeTripMedia
     }
   };
 

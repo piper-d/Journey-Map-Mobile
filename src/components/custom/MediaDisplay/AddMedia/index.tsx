@@ -28,7 +28,8 @@ export const AddMedia = ({
         mediaTypes: MediaTypeOptions.All,
         allowsEditing: true,
         aspect: [4, 3],
-        quality: 1,
+        quality: 0.5,
+        base64: true,
       });
 
       if (!result.canceled) {
@@ -47,6 +48,7 @@ export const AddMedia = ({
         allowsEditing: true,
         aspect: [1, 1],
         quality: 0.5,
+        base64: true,
       });
       if (!result.canceled) {
         addMedia(result.assets![0].uri);

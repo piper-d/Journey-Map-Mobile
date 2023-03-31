@@ -1,6 +1,14 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from '../../config/axios';
 import { useState } from 'react';
+import axios from '../../config/axios';
+import moment from 'moment';
+import { downloadAsync, readAsStringAsync, EncodingType } from 'expo-file-system';
+
+type DeleteTripData = {
+  latitude: string;
+  longitude: string;
+  url: string;
+};
 
 export type TripDataInput = {
   ['title']: string;
@@ -16,6 +24,7 @@ export type TripDataInput = {
 type ResponseTripData = TripDataInput & {
   user: {};
   id: string;
+  media: { [coords: string]: string[] } | undefined;
 };
 
 export type TripData = {
@@ -25,6 +34,7 @@ export type TripData = {
 
 const formatResponse = (items: ResponseTripData[]): TripData[] => {
   return items.map((x, index) => {
+    // console.log(x);
     return { id: index + 1, item: x };
   });
 };
@@ -140,29 +150,54 @@ export const useTrips = () => {
 
   const addTripMedia = async (id: string, data: { media: string }) => {
     try {
+      console.log(id);
+      console.log(data.media);
+      const extension = data.media.split('.')[1];
+      console.log(extension);
+
+      const base64Image = await readAsStringAsync(data.media, {
+        encoding: EncodingType.Base64,
+      });
+      const file = new File([base64Image], 'Image');
+
       const formData = new FormData();
       formData.append('latitude', '69');
       formData.append('longitude', '69');
-      formData.append('media', data.media);
+      formData.append('image', file);
+      formData.append('extension', extension);
 
       const token = await AsyncStorage.getItem('accessToken');
-      console.log(`/trips/${id}/media`);
-      const response = await axios.post(
-        `/trips/${id}/media`,
-        {
-          formData,
+      const response = await axios.post(`/trips/${id}/media`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-          params: {
-            id: id,
-          },
-        }
-      );
+      });
       console.log(response.status);
+      console.log('HERE');
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log('error');
+      console.log(error);
+    }
+  };
+
+  const deleteTripMedia = async (id: string, data: DeleteTripData) => {
+    try {
+      console.log(id);
+      console.log(data);
+
+      const token = await AsyncStorage.getItem('accessToken');
+      const response = await axios.delete(`/trips/${id}/media`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          id: id,
+        },
+      });
+      console.log(response.status);
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.log('error');
@@ -177,7 +212,8 @@ export const useTrips = () => {
     getTrip,
     createTrip,
     updateTripTitle,
-    addTripMedia,
     deleteTrip,
+    addTripMedia,
+    deleteTripMedia,
   };
 };

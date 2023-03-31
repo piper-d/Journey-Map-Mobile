@@ -14,7 +14,12 @@ export const ViewMedia = ({
 }) => {
   return (
     <View>
-      <Image style={styles.image} source={{ uri }} />
+      <Image
+        style={styles.image}
+        source={{
+          uri,
+        }}
+      />
       <TouchableOpacity
         style={styles.deleteIcon}
         activeOpacity={0.7}

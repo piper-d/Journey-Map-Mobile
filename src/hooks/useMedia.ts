@@ -18,5 +18,5 @@ export const useMedia = () => {
     });
   };
 
-  return { media, addMedia, removeMedia };
+  return { media, setMedia, addMedia, removeMedia };
 };

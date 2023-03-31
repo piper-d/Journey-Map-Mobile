@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import MapView, { LatLng, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import { styles } from './styles';
 import { TripData } from '../../../api/useTrips';
+import { useMedia } from '../../../hooks/useMedia';
 import { ArchiveDialog } from '../ArchiveDialog';
-import moment from 'moment';
+import { styles } from './styles';
 
 function calculateLatLngDelta(latLngs: LatLng[]) {
   if (latLngs.length === 1) {
@@ -43,11 +44,30 @@ const getLatLngCoords = (coords: any[][]) => {
   }) as LatLng[];
 };
 
+const formatMedia = (media: TripData['item']['media']): string[] | undefined => {
+  if (media === undefined) {
+    return undefined;
+  }
+  return Object.entries(media)
+    .map((x) => x[1])
+    .flat();
+};
+
 export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: () => void }) {
+  const { media, setMedia, addMedia, removeMedia } = useMedia();
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  // console.log(item);
 
   const { duration, distance, average_speed } = item.details;
+  const { media: oldMedia } = item;
+
+  useEffect(() => {
+    const formattedMedia = formatMedia(oldMedia);
+    if (formatMedia !== undefined) {
+      setMedia(formattedMedia);
+      // console.log(media);
+    }
+  }, []);
 
   const latLngCoords = getLatLngCoords(item.point_coords);
   const latLngDelta = calculateLatLngDelta(latLngCoords);
@@ -59,7 +79,11 @@ export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: ()
         <ArchiveDialog
           id={item.id}
           title={item.title}
+          media={media}
+          oldMedia={formatMedia(oldMedia)}
           isOpen={isOpen}
+          addMedia={addMedia}
+          removeMedia={removeMedia}
           setIsOpen={(x) => setIsOpen(x)}
           setItems={() => setItems()}
         />
