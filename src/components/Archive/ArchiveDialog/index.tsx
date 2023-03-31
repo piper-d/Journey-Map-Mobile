@@ -6,6 +6,7 @@ import { DeleteTripData, useTrips } from '../../../api/useTrips';
 import { MediaDisplay } from '../../custom/MediaDisplay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles } from './styles';
+import { Loader } from '../../custom/Loader';
 
 export const ArchiveDialog = ({
   id,
@@ -33,8 +34,11 @@ export const ArchiveDialog = ({
 
   const [newTitle, setNewTitle] = useState<string>('');
   const [isDelete, setIsDelete] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const onSave = () => {
+    setIsLoading(true);
+
     if (newTitle.length > 0) {
       updateTripTitle(id, { title: newTitle }).then((x) => {
         setItems();
@@ -45,16 +49,13 @@ export const ArchiveDialog = ({
     const newMedia = media?.filter((item) => !oldMedia?.includes(item));
     const removeOldMedia = oldMedia?.filter((item) => !media?.includes(item));
 
-    console.log('newMedia');
-    console.log(newMedia);
-
-    console.log('removeOldMedia');
-    console.log(removeOldMedia);
-
     // Add new images
     if (newMedia !== undefined && newMedia.length > 0) {
       for (var i = 0; i < newMedia.length; i++) {
-        addTripMedia(id, { media: newMedia[i] }).then((x) => {});
+        addTripMedia(id, { media: newMedia[i] }).then((x) => {
+          setIsLoading(false);
+          setIsOpen(false);
+        });
       }
     }
 
@@ -66,11 +67,12 @@ export const ArchiveDialog = ({
           longitude: '69',
           url: removeOldMedia[i],
         };
-        deleteTripMedia(id, data);
+        deleteTripMedia(id, data).then((x) => {
+          setIsLoading(false);
+          setIsOpen(false);
+        });
       }
     }
-
-    setIsOpen(false);
   };
 
   const onDelete = () => {
@@ -88,7 +90,6 @@ export const ArchiveDialog = ({
   const shareTrip = async () => {
     let url = '';
     exportTrip(id).then((x) => {
-      console.log(x);
       url = x as unknown as string;
     });
 
@@ -110,7 +111,11 @@ export const ArchiveDialog = ({
       {!isDelete && (
         <Dialog.Container visible={isOpen} contentStyle={styles.container}>
           <Dialog.Title>Edit Trip</Dialog.Title>
-          <TouchableOpacity style={styles.deleteIcon} onPress={() => setIsDelete(true)}>
+          <TouchableOpacity
+            disabled={isLoading}
+            style={styles.deleteIcon}
+            onPress={() => setIsDelete(true)}
+          >
             <MaterialCommunityIcons name='delete-outline' color={'grey'} size={30} />
           </TouchableOpacity>
           {/* {isMedia && (
@@ -120,19 +125,23 @@ export const ArchiveDialog = ({
           )} */}
           <Dialog.Description>Change the title or add/remove media</Dialog.Description>
           <Dialog.Input
+            editable={!isLoading}
             placeholder={title}
             value={newTitle}
             onChange={(e) => setNewTitle(e.nativeEvent.text)}
           />
-          <MediaDisplay
-            media={media}
-            addMedia={(x: string) => addMedia(x)}
-            removeMedia={(x: string) => removeMedia(x)}
-            type={'Library'}
-          />
+          {isLoading && <Loader color={'grey'} style={{ paddingBottom: 15 }} />}
+          {!isLoading && (
+            <MediaDisplay
+              media={media}
+              addMedia={(x: string) => addMedia(x)}
+              removeMedia={(x: string) => removeMedia(x)}
+              type={'Library'}
+            />
+          )}
 
-          <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
-          <Dialog.Button label='Save' onPress={() => onSave()} />
+          <Dialog.Button disabled={isLoading} label='Cancel' onPress={() => setIsOpen(false)} />
+          <Dialog.Button disabled={isLoading} label='Save' onPress={() => onSave()} />
         </Dialog.Container>
       )}
       {isDelete && (
