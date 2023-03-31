@@ -41,7 +41,7 @@ export function TrackingView({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
 
-  const { createTrip } = useTrips();
+  const { createTrip, addTripMedia } = useTrips();
 
   const { media, addMedia, removeMedia } = useMedia();
 
@@ -90,11 +90,18 @@ export function TrackingView({
         start_time: location.locationArray[0].timestamp,
         end_time: location.locationArray[location.locationArray.length - 1].timestamp,
       },
-    }).then(() => {
-      refreshArchive();
-      setIsLoading(false);
-      setIsTracking();
+    }).then((response) => {
+      console.log(response);
+
+      if (media !== undefined) {
+        for (var i = 0; i < media?.length; i++) {
+          addTripMedia(response as unknown as string, { media: media[0] }).then((x) => {});
+        }
+      }
     });
+    refreshArchive();
+    setIsLoading(false);
+    setIsTracking();
   };
 
   return (

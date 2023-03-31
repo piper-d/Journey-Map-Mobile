@@ -1,3 +1,4 @@
+import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EncodingType, readAsStringAsync } from 'expo-file-system';
 import { useState } from 'react';
@@ -154,25 +155,26 @@ export const useTrips = () => {
       const extension = data.media.split('.')[1];
       console.log(extension);
 
-      const base64Image = await readAsStringAsync(data.media, {
-        encoding: EncodingType.Base64,
-      });
-      const file = new File([base64Image], 'Image');
+      const imageFile = {
+        uri: data.media,
+        name: 'image',
+        type: `image/${extension}`,
+      };
 
       const formData = new FormData();
       formData.append('latitude', '69');
       formData.append('longitude', '69');
-      formData.append('image', file);
+      formData.append('image', imageFile as unknown as File);
       formData.append('extension', extension);
 
       const token = await AsyncStorage.getItem('accessToken');
       const response = await axios.post(`/trips/${id}/media`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
         },
       });
       console.log(response.status);
-      console.log('HERE');
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -211,7 +213,7 @@ export const useTrips = () => {
   const exportTrip = async (id: string) => {
     try {
       const token = await AsyncStorage.getItem('accessToken');
-      const response = await axios.delete(`/trips/${id}/export`, {
+      const response = await axios.get(`/trips/${id}/export`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -88,11 +88,13 @@ export const ArchiveDialog = ({
   const shareTrip = async () => {
     let url = '';
     exportTrip(id).then((x) => {
+      console.log(x);
       url = x as unknown as string;
     });
 
     const canShare = await Sharing.isAvailableAsync();
 
+    // console.log(url);
     if (canShare) {
       await Sharing.shareAsync(url, {});
     } else {
