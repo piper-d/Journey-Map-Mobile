@@ -205,6 +205,26 @@ export const useTrips = () => {
     }
   };
 
+  const exportTrip = async (id: string) => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      const response = await axios.delete(`/trips/${id}/export`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          id: id,
+        },
+      });
+      console.log(response.status);
+      console.log(response.data);
+      return response;
+    } catch (error) {
+      console.log('error');
+      console.log(error);
+    }
+  };
+
   return {
     isLoading,
     setIsLoading: (x: boolean) => setIsLoading(x),
@@ -215,5 +235,6 @@ export const useTrips = () => {
     deleteTrip,
     addTripMedia,
     deleteTripMedia,
+    exportTrip,
   };
 };

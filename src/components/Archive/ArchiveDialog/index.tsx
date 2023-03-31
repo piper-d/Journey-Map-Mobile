@@ -29,7 +29,7 @@ export const ArchiveDialog = ({
 
   setItems: () => void;
 }) => {
-  const { updateTripTitle, addTripMedia, deleteTrip } = useTrips();
+  const { updateTripTitle, addTripMedia, deleteTrip, exportTrip } = useTrips();
 
   const [newTitle, setNewTitle] = useState<string>('');
   const [isDelete, setIsDelete] = useState<boolean>(false);
@@ -75,7 +75,10 @@ export const ArchiveDialog = ({
   };
 
   const shareTrip = async () => {
-    const url = '';
+    let url = '';
+    exportTrip(id).then((x) => {
+      url = x as unknown as string;
+    });
 
     const canShare = await Sharing.isAvailableAsync();
 
@@ -86,6 +89,8 @@ export const ArchiveDialog = ({
     }
   };
 
+  const isMedia = media !== undefined && media.length > 0;
+
   return (
     <View>
       {!isDelete && (
@@ -94,9 +99,11 @@ export const ArchiveDialog = ({
           <TouchableOpacity style={styles.deleteIcon} onPress={() => setIsDelete(true)}>
             <MaterialCommunityIcons name='delete-outline' color={'grey'} size={30} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.shareIcon} onPress={() => shareTrip()}>
-            <MaterialCommunityIcons name='export-variant' color={'grey'} size={27} />
-          </TouchableOpacity>
+          {isMedia && (
+            <TouchableOpacity style={styles.shareIcon} onPress={() => shareTrip()}>
+              <MaterialCommunityIcons name='export-variant' color={'grey'} size={27} />
+            </TouchableOpacity>
+          )}
           <Dialog.Description>Change the title or add/remove media</Dialog.Description>
           <Dialog.Input
             placeholder={title}
