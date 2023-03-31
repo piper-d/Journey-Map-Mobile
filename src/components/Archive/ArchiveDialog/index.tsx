@@ -113,11 +113,11 @@ export const ArchiveDialog = ({
           <TouchableOpacity style={styles.deleteIcon} onPress={() => setIsDelete(true)}>
             <MaterialCommunityIcons name='delete-outline' color={'grey'} size={30} />
           </TouchableOpacity>
-          {isMedia && (
+          {/* {isMedia && (
             <TouchableOpacity style={styles.shareIcon} onPress={() => shareTrip()}>
               <MaterialCommunityIcons name='export-variant' color={'grey'} size={27} />
             </TouchableOpacity>
-          )}
+          )} */}
           <Dialog.Description>Change the title or add/remove media</Dialog.Description>
           <Dialog.Input
             placeholder={title}

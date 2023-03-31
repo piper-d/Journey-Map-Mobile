@@ -148,12 +148,12 @@ export function TrackingView({
         <View style={styles.buttonsContainer}>
           {!isLoading && (
             <>
-              <TouchableOpacity style={styles.cameraButton} onPress={() => setIsCameraOpen(true)}>
+              {/* <TouchableOpacity style={styles.cameraButton} onPress={() => setIsCameraOpen(true)}>
                 <MaterialCommunityIcons name='camera' color='white' size={50} />
                 <View style={styles.imageLength}>
                   <Text style={{ color: 'grey' }}>{media === undefined ? 0 : media.length}</Text>
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity style={styles.stopButton} onPress={() => stopTracking()}>
                 <MaterialCommunityIcons name='stop' color='white' size={42} />
               </TouchableOpacity>
