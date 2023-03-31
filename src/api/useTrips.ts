@@ -223,7 +223,7 @@ export const useTrips = () => {
       });
       console.log(response.status);
       console.log(response.data);
-      return response;
+      return response.data;
     } catch (error) {
       console.log('error');
       console.log(error);
