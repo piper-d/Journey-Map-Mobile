@@ -1,10 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { EncodingType, readAsStringAsync } from 'expo-file-system';
 import { useState } from 'react';
 import axios from '../../config/axios';
-import moment from 'moment';
-import { downloadAsync, readAsStringAsync, EncodingType } from 'expo-file-system';
 
-type DeleteTripData = {
+export type DeleteTripData = {
   latitude: string;
   longitude: string;
   url: string;
@@ -188,14 +187,18 @@ export const useTrips = () => {
       console.log(data);
 
       const token = await AsyncStorage.getItem('accessToken');
-      const response = await axios.delete(`/trips/${id}/media`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        params: {
-          id: id,
-        },
-      });
+      const response = await axios.put(
+        `/trips/${id}/media/delete`,
+        { ...data },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          params: {
+            id: id,
+          },
+        }
+      );
       console.log(response.status);
       console.log(response.data);
       return response.data;

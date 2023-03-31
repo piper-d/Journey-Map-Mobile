@@ -2,7 +2,7 @@ import * as Sharing from 'expo-sharing';
 import React, { useState } from 'react';
 import { Alert, TouchableOpacity, View } from 'react-native';
 import Dialog from 'react-native-dialog';
-import { useTrips } from '../../../api/useTrips';
+import { DeleteTripData, useTrips } from '../../../api/useTrips';
 import { MediaDisplay } from '../../custom/MediaDisplay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles } from './styles';
@@ -29,7 +29,7 @@ export const ArchiveDialog = ({
 
   setItems: () => void;
 }) => {
-  const { updateTripTitle, addTripMedia, deleteTrip, exportTrip } = useTrips();
+  const { updateTripTitle, addTripMedia, deleteTrip, exportTrip, deleteTripMedia } = useTrips();
 
   const [newTitle, setNewTitle] = useState<string>('');
   const [isDelete, setIsDelete] = useState<boolean>(false);
@@ -51,15 +51,26 @@ export const ArchiveDialog = ({
     console.log('removeOldMedia');
     console.log(removeOldMedia);
 
+    // Add new images
     if (newMedia !== undefined && newMedia.length > 0) {
       for (var i = 0; i < newMedia.length; i++) {
         addTripMedia(id, { media: newMedia[i] }).then((x) => {});
       }
     }
 
+    // Remove deleted Images
     if (removeOldMedia !== undefined && removeOldMedia.length > 0) {
-      //removeTripMedia
+      for (var i = 0; i < removeOldMedia.length; i++) {
+        const data: DeleteTripData = {
+          latitude: '69',
+          longitude: '69',
+          url: removeOldMedia[i],
+        };
+        deleteTripMedia(id, data);
+      }
     }
+
+    setIsOpen(false);
   };
 
   const onDelete = () => {
@@ -89,7 +100,8 @@ export const ArchiveDialog = ({
     }
   };
 
-  const isMedia = media !== undefined && media.length > 0;
+  const isMedia =
+    media !== undefined && media.length > 0 && oldMedia !== undefined && oldMedia.length > 0;
 
   return (
     <View>
