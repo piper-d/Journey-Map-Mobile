@@ -116,7 +116,7 @@ export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: ()
             children={`Duration: ${moment.utc(Number(duration) * 1000).format('HH:mm:ss')}`}
           />
           <Text style={styles.statistics} children={`Mileage: ${distance} Mi`} />
-          <Text style={styles.statistics} children={`Speed: ${average_speed} MPH`} />
+          <Text style={styles.statistics} children={`Pace: ${average_speed}`} />
         </>
       </TouchableOpacity>
     </>
