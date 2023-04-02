@@ -80,7 +80,7 @@ export const DeleteDialog = ({
             placeholder={'Password'}
             value={password}
             onChange={(e) => setPassword(e.nativeEvent.text)}
-            secureTextEntry={false}
+            secureTextEntry={true}
             autoCapitalize={'none'}
           />
           {!!errorMessage && (
