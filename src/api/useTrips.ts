@@ -39,6 +39,8 @@ const formatResponse = (items: ResponseTripData[]): TripData[] => {
   });
 };
 
+const tripIdResponse = (response: string): string => JSON.parse(response).tripId;
+
 export const useTrips = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -55,6 +57,7 @@ export const useTrips = () => {
         }
       );
       console.log(response.status);
+      return tripIdResponse(response.data);
     } catch (error) {
       console.log('error');
       console.log(error);
