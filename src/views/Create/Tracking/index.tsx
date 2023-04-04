@@ -57,7 +57,6 @@ export function TrackingView({
 
   useEffect(() => {
     Location.watchPositionAsync(options, (currentLocation) => {
-      // console.log({ currentLocation });
       setLocation((prevLocation) => ({
         currLocation: currentLocation,
         locationArray: [...(prevLocation?.locationArray ?? []), currentLocation],
@@ -76,6 +75,7 @@ export function TrackingView({
       clearTimeout(durationTimer);
     };
   }, []);
+
   const stopTracking = () => {
     setIsLoading(true);
     watcher?.remove();
@@ -90,20 +90,16 @@ export function TrackingView({
         start_time: location.locationArray[0].timestamp,
         end_time: location.locationArray[location.locationArray.length - 1].timestamp,
       },
-    }).then((response) => {
-      console.log(response);
-
+    }).then(async (response) => {
       if (media !== undefined && response !== undefined) {
         for (var i = 0; i < media?.length; i++) {
-          addTripMedia(response, { media: media[i] }).then((x) => {
-            console.log('Uploaded Image');
-          });
+          await addTripMedia(response, { media: media[i] });
         }
       }
+      refreshArchive();
+      setIsLoading(false);
+      setIsTracking();
     });
-    refreshArchive();
-    setIsLoading(false);
-    setIsTracking();
   };
 
   return (

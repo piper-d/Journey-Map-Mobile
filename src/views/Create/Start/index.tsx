@@ -49,7 +49,11 @@ export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
     }
   }, [isTrackingReady]);
 
-  if (!status)
+  if (status === undefined) {
+    return <View></View>;
+  }
+
+  if (status === false)
     return (
       <View>
         <Text>

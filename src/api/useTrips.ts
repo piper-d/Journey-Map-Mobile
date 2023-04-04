@@ -39,8 +39,6 @@ const formatResponse = (items: ResponseTripData[]): TripData[] => {
   });
 };
 
-const tripIdResponse = (response: string): string => JSON.parse(response).tripId;
-
 export const useTrips = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -56,8 +54,9 @@ export const useTrips = () => {
           },
         }
       );
-      console.log(response.status);
-      return tripIdResponse(response.data);
+      console.log('Create Trip: ' + response.status);
+      // console.log(response.data.tripId);
+      return response.data.tripId;
     } catch (error) {
       console.log('error');
       console.log(error);
@@ -143,7 +142,7 @@ export const useTrips = () => {
           id: id,
         },
       });
-      console.log(response.status);
+      console.log('Delete Trip: ' + response.status);
       return response.data;
     } catch (error) {
       console.log('error');
@@ -153,10 +152,10 @@ export const useTrips = () => {
 
   const addTripMedia = async (id: string, data: { media: string }) => {
     try {
-      console.log(id);
-      console.log(data.media);
+      // console.log(id);
+      // console.log(data.media);
       const extension = data.media.split('.')[1];
-      console.log(extension);
+      // console.log(extension);
 
       const imageFile = {
         uri: data.media,
@@ -177,8 +176,8 @@ export const useTrips = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(response.status);
-      console.log(response.data);
+      console.log('Media Upload: ' + response.status);
+      // console.log(response.data);
       return response.data;
     } catch (error) {
       console.log('error');
@@ -188,8 +187,8 @@ export const useTrips = () => {
 
   const deleteTripMedia = async (id: string, data: DeleteTripData) => {
     try {
-      console.log(id);
-      console.log(data);
+      // console.log(id);
+      // console.log(data);
 
       const token = await AsyncStorage.getItem('accessToken');
       const response = await axios.put(
@@ -204,7 +203,7 @@ export const useTrips = () => {
           },
         }
       );
-      console.log(response.status);
+      console.log('Delete Trip Media: ' + response.status);
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -224,9 +223,9 @@ export const useTrips = () => {
           id: id,
         },
       });
-      console.log(response.status);
+      console.log('Export Trip: ' + response.status);
       console.log(response.data);
-      return response.data;
+      return response.data.downloadLink;
     } catch (error) {
       console.log('error');
       console.log(error);

@@ -7,6 +7,7 @@ import { MediaDisplay } from '../../custom/MediaDisplay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles } from './styles';
 import { Loader } from '../../custom/Loader';
+import { documentDirectory, downloadAsync } from 'expo-file-system';
 
 export const ArchiveDialog = ({
   id,
@@ -36,26 +37,21 @@ export const ArchiveDialog = ({
   const [isDelete, setIsDelete] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const onSave = () => {
+  const onSave = async () => {
     setIsLoading(true);
 
     if (newTitle.length > 0) {
-      updateTripTitle(id, { title: newTitle }).then((x) => {
-        setItems();
-        setIsOpen(false);
-      });
+      await updateTripTitle(id, { title: newTitle });
     }
-    // for loop all trips
+
+    // Find what needs to be added and deleted
     const newMedia = media?.filter((item) => !oldMedia?.includes(item));
     const removeOldMedia = oldMedia?.filter((item) => !media?.includes(item));
 
     // Add new images
     if (newMedia !== undefined && newMedia.length > 0) {
       for (var i = 0; i < newMedia.length; i++) {
-        addTripMedia(id, { media: newMedia[i] }).then((x) => {
-          setIsLoading(false);
-          setIsOpen(false);
-        });
+        await addTripMedia(id, { media: newMedia[i] });
       }
     }
 
@@ -67,12 +63,11 @@ export const ArchiveDialog = ({
           longitude: '69',
           url: removeOldMedia[i],
         };
-        deleteTripMedia(id, data).then((x) => {
-          setIsLoading(false);
-          setIsOpen(false);
-        });
+        await deleteTripMedia(id, data);
       }
     }
+    setIsLoading(false);
+    setIsOpen(false);
   };
 
   const onDelete = () => {
@@ -87,20 +82,22 @@ export const ArchiveDialog = ({
       });
   };
 
-  const shareTrip = async () => {
-    let url = '';
-    exportTrip(id).then((x) => {
-      url = x as unknown as string;
+  const shareTrip = () => {
+    setIsLoading(true);
+    exportTrip(id).then(async (uri) => {
+      const canShare = await Sharing.isAvailableAsync();
+
+      // console.log(url);
+      if (canShare) {
+        downloadAsync(uri, documentDirectory + `${id}.mp4`).then(async ({ uri: localUrl }) => {
+          Sharing.shareAsync(localUrl).then(() => {
+            setIsLoading(false);
+          });
+        });
+      } else {
+        Alert.alert('Sharing is not availble.');
+      }
     });
-
-    const canShare = await Sharing.isAvailableAsync();
-
-    // console.log(url);
-    if (canShare) {
-      await Sharing.shareAsync(url, {});
-    } else {
-      Alert.alert('Sharing is not availble.');
-    }
   };
 
   const isMedia =
@@ -118,11 +115,15 @@ export const ArchiveDialog = ({
           >
             <MaterialCommunityIcons name='delete-outline' color={'grey'} size={30} />
           </TouchableOpacity>
-          {/* {isMedia && (
-            <TouchableOpacity style={styles.shareIcon} onPress={() => shareTrip()}>
+          {isMedia && (
+            <TouchableOpacity
+              style={styles.shareIcon}
+              onPress={() => shareTrip()}
+              disabled={isLoading}
+            >
               <MaterialCommunityIcons name='export-variant' color={'grey'} size={27} />
             </TouchableOpacity>
-          )} */}
+          )}
           <Dialog.Description>Change the title or add/remove media</Dialog.Description>
           <Dialog.Input
             editable={!isLoading}
