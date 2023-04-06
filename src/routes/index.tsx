@@ -9,6 +9,7 @@ import { SignIn } from '../views/Auth/SignIn';
 import { SignUp } from '../views/Auth/SignUp';
 import { StartView } from '../views/Create/Start';
 import { SettingsView } from '../views/Settings';
+import { ForgotPassword } from '../views/Auth/ForgotPassword';
 
 export type RootTabParamList = {
   Create: undefined;
@@ -19,6 +20,7 @@ export type RootTabParamList = {
 export type RootStackParamList = {
   SignIn: undefined;
   SignUp: undefined;
+  ForgotPassword: undefined;
 };
 
 export type TabProps = NativeStackScreenProps<RootTabParamList>;
@@ -66,6 +68,11 @@ export function Routes() {
           <Stack.Screen
             name='SignUp'
             children={(props) => <SignUp {...props} setAuthorizedUser={setAuthorizedUser} />}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='ForgotPassword'
+            children={(props) => <ForgotPassword {...props} />}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>

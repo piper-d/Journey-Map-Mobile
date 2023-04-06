@@ -74,6 +74,7 @@ export function SignIn({
           <Text style={styles.text}>Sign In</Text>
         </Pressable>
         <Button title='Create an account' onPress={() => navigation.navigate('SignUp')} />
+        <Button title='Forgot Password' onPress={() => navigation.navigate('ForgotPassword')} />
       </ImageBackground>
     </View>
   );
