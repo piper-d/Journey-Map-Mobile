@@ -69,7 +69,9 @@ export function TrackingView({
         console.log(err);
       });
 
-    const durationTimer = setInterval(() => setDuration((prevDuration) => prevDuration + 1), 1000);
+    const durationTimer = setInterval(() => {
+      if (!isLoading) setDuration((prevDuration) => prevDuration + 1);
+    }, 1000);
 
     return () => {
       clearTimeout(durationTimer);
@@ -77,8 +79,8 @@ export function TrackingView({
   }, []);
 
   const stopTracking = () => {
-    setIsLoading(true);
     watcher?.remove();
+    setIsLoading(true);
 
     createTrip({
       title: getTitle(location.locationArray[0].timestamp),

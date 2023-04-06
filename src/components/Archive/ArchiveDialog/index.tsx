@@ -66,6 +66,7 @@ export const ArchiveDialog = ({
         await deleteTripMedia(id, data);
       }
     }
+    setItems();
     setIsLoading(false);
     setIsOpen(false);
   };

@@ -6,6 +6,7 @@ import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TrackingView } from '../Tracking';
 import { styles } from './styles';
+import { Loader } from '../../../components/custom/Loader';
 
 export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
   const [initialLocation, setInitialLocation] = useState<LocationObject>();
@@ -13,6 +14,7 @@ export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
 
   const [isTracking, setIsTracking] = useState<boolean>(false);
   const [isTrackingReady, setIsTrackingReady] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [status, setStatus] = useState<boolean>();
 
   useEffect(() => {
@@ -35,6 +37,7 @@ export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
   }, []);
 
   const startTracking = () => {
+    setIsLoading(true);
     Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High,
     }).then((currLocation) => {
@@ -81,13 +84,16 @@ export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
             }}
           />
           <View style={styles.buttonView}>
-            <TouchableOpacity
-              style={styles.button}
-              activeOpacity={0.9}
-              onPress={() => startTracking()}
-            >
-              <MaterialCommunityIcons name='plus' size={48} />
-            </TouchableOpacity>
+            {!isLoading && (
+              <TouchableOpacity
+                style={styles.button}
+                activeOpacity={0.9}
+                onPress={() => startTracking()}
+              >
+                <MaterialCommunityIcons name='plus' size={48} />
+              </TouchableOpacity>
+            )}
+            {isLoading && <Loader size={'large'} />}
           </View>
         </View>
       )}
@@ -98,6 +104,7 @@ export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
           setIsTracking={() => {
             setIsTracking(false);
             setIsTrackingReady(false);
+            setIsLoading(false);
           }}
           refreshArchive={refreshArchive}
         />

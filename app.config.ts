@@ -6,7 +6,7 @@ export default {
     name: 'Journey-Map-Mobile',
     slug: 'journey-map-mobile',
     privacy: 'hidden',
-    version: '1.0.0',
+    version: '1.0.1',
     orientation: 'portrait',
     icon: './assets/JourneyMap.png',
     entryPoint: 'App.tsx',
@@ -22,7 +22,7 @@ export default {
     ios: {
       bundleIdentifier: 'com.JourneyMap',
       supportsTablet: true,
-      buildNumber: '7',
+      buildNumber: '8',
       infoPlist: {
         NSCameraUsageDescription: 'Your camera is used to add media to the trip.',
         NSLocationWhenInUseUsageDescription:
