@@ -23,34 +23,34 @@ const auth = initializeAuth(app, {
 const db = getFirestore(app);
 const functions = getFunctions(app);
 
-const refreshToken = () => {
-  useEffect(() => {
-    async function refreshCurrentToken() {
-      const user = auth.currentUser;
-      console.log(await AsyncStorage.getItem('accessToken'));
+// const refreshToken = () => {
+//   useEffect(() => {
+//     async function refreshCurrentToken() {
+//       const user = auth.currentUser;
+//       console.log(await AsyncStorage.getItem('accessToken'));
 
-      if (user) {
-        user
-          .getIdToken(true)
-          .then(async (token) => {
-            await AsyncStorage.setItem('accessToken', token);
-            console.log('Set Token');
-            console.log(token);
-          })
-          .catch((error: any) => {
-            console.error('Error refreshing token:', error);
-          });
-      }
-    }
+//       if (user) {
+//         user
+//           .getIdToken(true)
+//           .then(async (token) => {
+//             await AsyncStorage.setItem('accessToken', token);
+//             console.log('Set Token');
+//             console.log(token);
+//           })
+//           .catch((error: any) => {
+//             console.error('Error refreshing token:', error);
+//           });
+//       }
+//     }
 
-    const tokenRefreshInterval = 57 * 60 * 1000; // Refresh every 57 minutes
-    const intervalId = setInterval(refreshCurrentToken, tokenRefreshInterval);
+//     const tokenRefreshInterval = 57 * 60 * 1000; // Refresh every 57 minutes
+//     const intervalId = setInterval(refreshCurrentToken, tokenRefreshInterval);
 
-    // Clean up the interval when the component is unmounted
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
-};
+//     // Clean up the interval when the component is unmounted
+//     return () => {
+//       clearInterval(intervalId);
+//     };
+//   }, []);
+// };
 
-export { auth, db, functions, refreshToken };
+export { auth, db, functions };
