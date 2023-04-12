@@ -45,8 +45,6 @@ export const useTrips = () => {
         },
       })
       .then((response) => {
-        setIsLoading(false);
-
         return formatResponse(response.data);
       })
       .catch((error) => {
