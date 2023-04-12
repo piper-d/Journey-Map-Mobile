@@ -2,12 +2,13 @@ import * as Sharing from 'expo-sharing';
 import React, { useState } from 'react';
 import { Alert, TouchableOpacity, View } from 'react-native';
 import Dialog from 'react-native-dialog';
-import { DeleteTripData, useTrips } from '../../../api/useTrips';
+import { useTrips } from '../../../api/useTrips';
 import { MediaDisplay } from '../../custom/MediaDisplay';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles } from './styles';
 import { Loader } from '../../custom/Loader';
 import { documentDirectory, downloadAsync } from 'expo-file-system';
+import { MediaObject } from '../../../types/MediaTypes';
 
 export const ArchiveDialog = ({
   id,
@@ -22,13 +23,12 @@ export const ArchiveDialog = ({
 }: {
   id: string;
   title: string;
-  media: string[] | undefined;
-  oldMedia: string[] | undefined;
+  media: MediaObject[] | undefined;
+  oldMedia: MediaObject[] | undefined;
   isOpen: boolean;
-  addMedia: (x: string) => void;
+  addMedia: (x: MediaObject) => void;
   removeMedia: (x: string) => void;
   setIsOpen: (x: boolean) => void;
-
   setItems: () => void;
 }) => {
   const { updateTripTitle, addTripMedia, deleteTrip, exportTrip, deleteTripMedia } = useTrips();
@@ -51,19 +51,14 @@ export const ArchiveDialog = ({
     // Add new images
     if (newMedia !== undefined && newMedia.length > 0) {
       for (var i = 0; i < newMedia.length; i++) {
-        await addTripMedia(id, { media: newMedia[i] });
+        await addTripMedia(id, newMedia[i]);
       }
     }
 
     // Remove deleted Images
     if (removeOldMedia !== undefined && removeOldMedia.length > 0) {
       for (var i = 0; i < removeOldMedia.length; i++) {
-        const data: DeleteTripData = {
-          latitude: '69',
-          longitude: '69',
-          url: removeOldMedia[i],
-        };
-        await deleteTripMedia(id, data);
+        await deleteTripMedia(id, removeOldMedia[i]);
       }
     }
     setItems();
@@ -136,7 +131,7 @@ export const ArchiveDialog = ({
           {!isLoading && (
             <MediaDisplay
               media={media}
-              addMedia={(x: string) => addMedia(x)}
+              addMedia={(x: MediaObject) => addMedia(x)}
               removeMedia={(x: string) => removeMedia(x)}
               type={'Library'}
             />

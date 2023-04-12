@@ -2,10 +2,11 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import MapView, { LatLng, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
-import { TripData } from '../../../api/useTrips';
 import { useMedia } from '../../../hooks/useMedia';
 import { ArchiveDialog } from '../ArchiveDialog';
 import { styles } from './styles';
+import { MediaObject } from '../../../types/MediaTypes';
+import { TripData } from '../../../types/TripTypes';
 
 function calculateLatLngDelta(latLngs: LatLng[]) {
   if (latLngs.length === 1) {
@@ -44,16 +45,34 @@ const getLatLngCoords = (coords: any[][]) => {
   }) as LatLng[];
 };
 
-const formatMedia = (media: TripData['item']['media']): string[] | undefined => {
+const formatMedia = (media: TripData['item']['media']) => {
   if (media === undefined) {
     return undefined;
   }
-  return Object.entries(media)
-    .map((x) => x[1])
-    .flat();
+
+  var formattedMedia: MediaObject[] = [];
+
+  for (var i = 0; i < Object.keys(media).length; i++) {
+    const currentKey = Object.keys(media)[i];
+    const coords = currentKey.substring(1, currentKey.length - 1).split(',');
+    if (media[currentKey].length > 0) {
+      for (var j = 0; j < media[currentKey].length; j++) {
+        formattedMedia.push({
+          url: media[currentKey][j],
+          latitude: coords[0],
+          longitude: coords[1],
+        });
+      }
+    }
+  }
+
+  return formattedMedia;
 };
 
-export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: () => void }) {
+export function ArchiveSummary({
+  item,
+  setItems,
+}: Omit<TripData & { setItems: () => void }, 'id'>) {
   const { media, setMedia, addMedia, removeMedia } = useMedia();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -63,9 +82,8 @@ export function ArchiveSummary({ id, item, setItems }: TripData & { setItems: ()
 
   useEffect(() => {
     const formattedMedia = formatMedia(oldMedia);
-    if (formatMedia !== undefined) {
+    if (formattedMedia !== undefined) {
       setMedia(formattedMedia);
-      // console.log(media);
     }
   }, []);
 

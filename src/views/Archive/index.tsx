@@ -1,10 +1,11 @@
 import { useIsFocused } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { FlatList, ImageBackground, SafeAreaView, Text } from 'react-native';
-import { TripData, useTrips } from '../../api/useTrips';
+import { useTrips } from '../../api/useTrips';
 import { ArchiveSummary } from '../../components/Archive/ArchiveSummary';
 import { Loader } from '../../components/custom/Loader';
 import { styles } from './styles';
+import { TripData } from '../../types/TripTypes';
 
 export function ArchiveView({
   items,

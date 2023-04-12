@@ -83,6 +83,19 @@ export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
               longitudeDelta: 0.003,
             }}
           />
+
+          {isLoading && (
+            <Loader
+              size={'large'}
+              style={{
+                position: 'absolute',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                width: '100%',
+              }}
+            />
+          )}
           <View style={styles.buttonView}>
             {!isLoading && (
               <TouchableOpacity
@@ -93,7 +106,6 @@ export function StartView({ refreshArchive }: { refreshArchive: () => void }) {
                 <MaterialCommunityIcons name='plus' size={48} />
               </TouchableOpacity>
             )}
-            {isLoading && <Loader size={'large'} />}
           </View>
         </View>
       )}

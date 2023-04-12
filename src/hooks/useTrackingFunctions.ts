@@ -4,26 +4,14 @@ import moment from 'moment';
 import { useCallback, useEffect } from 'react';
 import { LatLng } from 'react-native-maps';
 import { ITrackingObj } from '../views/Create/Tracking';
-import { TripDataInput } from '../api/useTrips';
-
-const fakeCoords: Location.LocationObject[] = [
-  {
-    coords: {
-      longitude: 0,
-      latitude: 0,
-      altitude: 0,
-      accuracy: 0,
-      altitudeAccuracy: 0,
-      heading: 0,
-      speed: 0,
-    },
-    timestamp: 0,
-  },
-];
+import { TripDataInput } from '../types/TripTypes';
 
 // Converts current speed from meters per second to MPH
 const convertToMinutesPerMile = (metersPerSecond: number | null): string => {
   if (metersPerSecond === null) return 'Not found';
+  if (metersPerSecond === 0) {
+    return '00:00';
+  }
 
   const metersPerMile = 1609.34;
   const minutesPerMile = metersPerMile / (metersPerSecond * 60);

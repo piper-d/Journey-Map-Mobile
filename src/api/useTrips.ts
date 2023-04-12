@@ -1,36 +1,8 @@
-import * as FileSystem from 'expo-file-system';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { EncodingType, readAsStringAsync } from 'expo-file-system';
 import { useState } from 'react';
 import axios from '../../config/axios';
-
-export type DeleteTripData = {
-  latitude: string;
-  longitude: string;
-  url: string;
-};
-
-export type TripDataInput = {
-  ['title']: string;
-  ['point_coords']: number[][];
-  ['details']: {
-    ['distance']: string;
-    ['duration']: string;
-    ['average_speed']: string;
-    ['start_time']: number;
-    ['end_time']: number;
-  };
-};
-type ResponseTripData = TripDataInput & {
-  user: {};
-  id: string;
-  media: { [coords: string]: string[] } | undefined;
-};
-
-export type TripData = {
-  id: number;
-  item: ResponseTripData;
-};
+import { MediaObject } from '../types/MediaTypes';
+import { ResponseTripData, TripData, TripDataInput } from '../types/TripTypes';
 
 const formatResponse = (items: ResponseTripData[]): TripData[] => {
   return items.map((x, index) => {
@@ -74,9 +46,6 @@ export const useTrips = () => {
       })
       .then((response) => {
         setIsLoading(false);
-        const trips = response.data['trips'];
-
-        if (trips === 'you currently have no trips') throw 'No Trips';
 
         return formatResponse(response.data);
       })
@@ -150,22 +119,19 @@ export const useTrips = () => {
     }
   };
 
-  const addTripMedia = async (id: string, data: { media: string }) => {
+  const addTripMedia = async (id: string, data: MediaObject) => {
     try {
-      // console.log(id);
-      // console.log(data.media);
-      const extension = data.media.split('.')[1];
-      // console.log(extension);
+      const extension = data.url.split('.')[1];
 
       const imageFile = {
-        uri: data.media,
+        uri: data.url,
         name: 'image',
         type: `image/${extension}`,
       };
 
       const formData = new FormData();
-      formData.append('latitude', '69');
-      formData.append('longitude', '69');
+      formData.append('latitude', data.latitude);
+      formData.append('longitude', data.longitude);
       formData.append('image', imageFile as unknown as File);
       formData.append('extension', extension);
 
@@ -177,7 +143,6 @@ export const useTrips = () => {
         },
       });
       console.log('Media Upload: ' + response.status);
-      // console.log(response.data);
       return response.data;
     } catch (error) {
       console.log('error');
@@ -185,11 +150,8 @@ export const useTrips = () => {
     }
   };
 
-  const deleteTripMedia = async (id: string, data: DeleteTripData) => {
+  const deleteTripMedia = async (id: string, data: MediaObject) => {
     try {
-      // console.log(id);
-      // console.log(data);
-
       const token = await AsyncStorage.getItem('accessToken');
       const response = await axios.put(
         `/trips/${id}/media/delete`,

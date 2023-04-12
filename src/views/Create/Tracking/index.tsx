@@ -40,6 +40,7 @@ export function TrackingView({
   const [distance, setDistance] = useState(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isCameraOpen, setIsCameraOpen] = useState<boolean>(false);
+  const [durationTimerId, setDurationTimerId] = useState<NodeJS.Timer>();
 
   const { createTrip, addTripMedia } = useTrips();
 
@@ -72,6 +73,7 @@ export function TrackingView({
     const durationTimer = setInterval(() => {
       if (!isLoading) setDuration((prevDuration) => prevDuration + 1);
     }, 1000);
+    setDurationTimerId(durationTimer);
 
     return () => {
       clearTimeout(durationTimer);
@@ -80,6 +82,7 @@ export function TrackingView({
 
   const stopTracking = () => {
     watcher?.remove();
+    clearTimeout(durationTimerId);
     setIsLoading(true);
 
     createTrip({
@@ -95,7 +98,7 @@ export function TrackingView({
     }).then(async (response) => {
       if (media !== undefined && response !== undefined) {
         for (var i = 0; i < media?.length; i++) {
-          await addTripMedia(response, { media: media[i] });
+          await addTripMedia(response, media[i]);
         }
       }
       refreshArchive();
@@ -114,6 +117,7 @@ export function TrackingView({
             removeMedia={removeMedia}
             isOpen={isCameraOpen}
             setIsOpen={(x: boolean) => setIsCameraOpen(x)}
+            currLocation={location.currLocation}
           />
         )}
         <View style={styles.mapContainer}>

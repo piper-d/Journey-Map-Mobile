@@ -10,15 +10,19 @@ import { Alert, Text, TouchableOpacity, View } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { styles } from './styles';
 import { CameraType } from '..';
+import { MediaObject } from '../../../../types/MediaTypes';
+import { LocationObject } from 'expo-location';
 
 export const AddMedia = ({
   mediaLength,
   addMedia,
   type,
+  currLocation,
 }: {
   mediaLength: number;
-  addMedia: (mediaURL: string) => void;
+  addMedia: (mediaURL: MediaObject) => void;
   type: CameraType;
+  currLocation?: LocationObject;
 }) => {
   const pickLibrary = async () => {
     const response = await requestMediaLibraryPermissionsAsync();
@@ -33,7 +37,7 @@ export const AddMedia = ({
       });
 
       if (!result.canceled) {
-        addMedia(result.assets![0].uri);
+        addMedia({ url: result.assets![0].uri, latitude: '69', longitude: '69' });
       }
     } else {
       Alert.alert('The app needs permission to access the camera. Please change this in settings.');
@@ -51,7 +55,13 @@ export const AddMedia = ({
         base64: true,
       });
       if (!result.canceled) {
-        addMedia(result.assets![0].uri);
+        const { latitude, longitude } = currLocation?.coords!;
+
+        addMedia({
+          url: result.assets![0].uri,
+          latitude: latitude.toString(),
+          longitude: longitude.toString(),
+        });
       }
     } else {
       Alert.alert('The app needs permission to access the camera. Please change this in settings.');

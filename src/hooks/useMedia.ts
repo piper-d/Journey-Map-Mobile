@@ -1,21 +1,26 @@
 import { useState } from 'react';
+import { MediaObject } from '../types/MediaTypes';
 
 export const useMedia = () => {
-  const [media, setMedia] = useState<string[]>();
+  const [media, setMedia] = useState<MediaObject[]>();
 
-  const addMedia = (mediaUrl: string) => {
+  const addMedia = (mediaObj: MediaObject) => {
     setMedia((prevMedia) => {
       if (prevMedia === undefined) {
-        return [mediaUrl];
+        return [mediaObj];
       }
-      return [...prevMedia, mediaUrl];
+      return [...prevMedia, mediaObj];
     });
   };
 
   const removeMedia = (mediaUrl: string) => {
-    setMedia((prevMedia) => {
-      return prevMedia?.filter((x) => x !== mediaUrl);
-    });
+    const mediaObj = media?.filter((x) => x.url === mediaUrl);
+
+    //mediaObj should always be one
+    if (mediaObj !== undefined && mediaObj.length === 1)
+      setMedia((prevMedia) => {
+        return prevMedia?.filter((x) => x !== mediaObj[0]);
+      });
   };
 
   return { media, setMedia, addMedia, removeMedia };
