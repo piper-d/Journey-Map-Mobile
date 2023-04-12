@@ -12,17 +12,20 @@ import { styles } from './styles';
 import { CameraType } from '..';
 import { MediaObject } from '../../../../types/MediaTypes';
 import { LocationObject } from 'expo-location';
+import { LatLng } from 'react-native-maps';
 
 export const AddMedia = ({
   mediaLength,
   addMedia,
   type,
   currLocation,
+  randomCoord,
 }: {
   mediaLength: number;
   addMedia: (mediaURL: MediaObject) => void;
   type: CameraType;
   currLocation?: LocationObject;
+  randomCoord?: LatLng;
 }) => {
   const pickLibrary = async () => {
     const response = await requestMediaLibraryPermissionsAsync();
@@ -37,7 +40,13 @@ export const AddMedia = ({
       });
 
       if (!result.canceled) {
-        addMedia({ url: result.assets![0].uri, latitude: '69', longitude: '69' });
+        const latitude = randomCoord !== undefined ? randomCoord.latitude.toString() : '69';
+        const longitude = randomCoord !== undefined ? randomCoord.longitude.toString() : '69';
+        addMedia({
+          url: result.assets![0].uri,
+          latitude: latitude,
+          longitude: longitude,
+        });
       }
     } else {
       Alert.alert('The app needs permission to access the camera. Please change this in settings.');

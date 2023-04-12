@@ -9,6 +9,7 @@ import { styles } from './styles';
 import { Loader } from '../../custom/Loader';
 import { documentDirectory, downloadAsync } from 'expo-file-system';
 import { MediaObject } from '../../../types/MediaTypes';
+import { LatLng } from 'react-native-maps';
 
 export const ArchiveDialog = ({
   id,
@@ -16,6 +17,7 @@ export const ArchiveDialog = ({
   media,
   oldMedia,
   isOpen,
+  randomCoord,
   addMedia,
   removeMedia,
   setIsOpen,
@@ -26,6 +28,7 @@ export const ArchiveDialog = ({
   media: MediaObject[] | undefined;
   oldMedia: MediaObject[] | undefined;
   isOpen: boolean;
+  randomCoord: LatLng;
   addMedia: (x: MediaObject) => void;
   removeMedia: (x: string) => void;
   setIsOpen: (x: boolean) => void;
@@ -45,8 +48,33 @@ export const ArchiveDialog = ({
     }
 
     // Find what needs to be added and deleted
-    const newMedia = media?.filter((item) => !oldMedia?.includes(item));
-    const removeOldMedia = oldMedia?.filter((item) => !media?.includes(item));
+    const newMedia = media?.filter((newItem) => {
+      const matches = oldMedia?.map((oldItem) => {
+        if (
+          oldItem.latitude === newItem.latitude &&
+          oldItem.longitude === newItem.longitude &&
+          oldItem.url === newItem.url
+        ) {
+          return true;
+        }
+        return false;
+      });
+
+      return matches?.every((x) => x === false) ? true : false;
+    });
+    const removeOldMedia = oldMedia?.filter((oldItem) => {
+      const matches = media?.map((newItem) => {
+        if (
+          oldItem.latitude === newItem.latitude &&
+          oldItem.longitude === newItem.longitude &&
+          oldItem.url === newItem.url
+        ) {
+          return true;
+        }
+        return false;
+      });
+      return matches?.every((x) => x === false) ? true : false;
+    });
 
     // Add new images
     if (newMedia !== undefined && newMedia.length > 0) {
@@ -134,6 +162,7 @@ export const ArchiveDialog = ({
               addMedia={(x: MediaObject) => addMedia(x)}
               removeMedia={(x: string) => removeMedia(x)}
               type={'Library'}
+              randomCoord={randomCoord}
             />
           )}
 

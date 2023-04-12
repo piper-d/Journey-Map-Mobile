@@ -69,6 +69,10 @@ const formatMedia = (media: TripData['item']['media']) => {
   return formattedMedia;
 };
 
+function getRandomValueFromArray(arr: LatLng[]): LatLng {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export function ArchiveSummary({
   item,
   setItems,
@@ -100,6 +104,7 @@ export function ArchiveSummary({
           media={media}
           oldMedia={formatMedia(oldMedia)}
           isOpen={isOpen}
+          randomCoord={getRandomValueFromArray(getLatLngCoords(item.point_coords))}
           addMedia={addMedia}
           removeMedia={removeMedia}
           setIsOpen={(x) => setIsOpen(x)}
@@ -126,7 +131,8 @@ export function ArchiveSummary({
               }}
             >
               {media !== undefined &&
-                media.map((x, index) => {
+                oldMedia !== undefined &&
+                formatMedia(oldMedia)!.map((x, index) => {
                   const coords = {
                     latitude: +x.latitude,
                     longitude: +x.longitude,

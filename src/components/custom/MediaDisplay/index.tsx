@@ -5,6 +5,7 @@ import { styles } from './styles';
 import { ViewMedia } from './ViewMedia';
 import { MediaObject } from '../../../types/MediaTypes';
 import { LocationObject } from 'expo-location';
+import { LatLng } from 'react-native-maps';
 
 export type CameraType = 'Camera' | 'Library';
 
@@ -14,12 +15,14 @@ export const MediaDisplay = ({
   removeMedia,
   type,
   currLocation,
+  randomCoord,
 }: {
   media: MediaObject[] | undefined;
   addMedia: (mediaURL: MediaObject) => void;
   removeMedia: (mediaURL: string) => void;
   type: CameraType;
   currLocation?: LocationObject;
+  randomCoord?: LatLng;
 }) => {
   const mediaLength = media ? media.length : 0;
 
@@ -44,6 +47,7 @@ export const MediaDisplay = ({
                 addMedia={addMedia}
                 type={type}
                 currLocation={currLocation}
+                randomCoord={randomCoord}
               />
             );
           }

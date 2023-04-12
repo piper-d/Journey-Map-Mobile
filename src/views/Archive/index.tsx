@@ -27,6 +27,7 @@ export function ArchiveView({
         if (x !== undefined) {
           setItems(x);
         }
+        setIsLoading(false);
         setIsInitialLoad(false);
       });
     }
