@@ -38,4 +38,18 @@ export const styles = StyleSheet.create({
     color: 'grey',
     padding: 4,
   },
+  dotMarker: {
+    height: 4,
+    width: 4,
+    borderWidth: 4,
+    borderColor: 'red',
+    borderRadius: 5,
+  },
+  imageMarker: {
+    height: 50,
+    width: 50,
+    borderRadius: 10,
+    borderColor: 'red',
+    borderWidth: 2,
+  },
 });

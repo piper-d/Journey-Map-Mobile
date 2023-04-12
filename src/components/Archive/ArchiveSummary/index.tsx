@@ -1,7 +1,7 @@
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
-import MapView, { LatLng, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
+import { Text, TouchableOpacity, View, Image } from 'react-native';
+import MapView, { LatLng, Marker, PROVIDER_GOOGLE, Polyline } from 'react-native-maps';
 import { useMedia } from '../../../hooks/useMedia';
 import { ArchiveDialog } from '../ArchiveDialog';
 import { styles } from './styles';
@@ -125,7 +125,39 @@ export function ArchiveSummary({
                 ...latLngDelta,
               }}
             >
-              <Polyline coordinates={latLngCoords} strokeWidth={5} strokeColor='black' />
+              {media !== undefined &&
+                media.map((x, index) => {
+                  const coords = {
+                    latitude: +x.latitude,
+                    longitude: +x.longitude,
+                  };
+                  const ImageCoords = {
+                    latitude: +x.latitude + 0.0002,
+                    longitude: +x.longitude,
+                  };
+
+                  return (
+                    <View key={index}>
+                      <Marker coordinate={coords}>
+                        <Image
+                          style={styles.dotMarker}
+                          source={{
+                            uri: x.url,
+                          }}
+                        />
+                      </Marker>
+                      <Marker coordinate={ImageCoords}>
+                        <Image
+                          style={styles.imageMarker}
+                          source={{
+                            uri: x.url,
+                          }}
+                        />
+                      </Marker>
+                    </View>
+                  );
+                })}
+              <Polyline coordinates={latLngCoords} strokeWidth={7} strokeColor='black' />
               <Polyline coordinates={latLngCoords} strokeWidth={3} strokeColor='white' />
             </MapView>
           </View>
