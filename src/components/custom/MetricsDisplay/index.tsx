@@ -14,7 +14,11 @@ export const MetricsDisplay = ({
   return (
     <View style={styles.container}>
       <Text style={styles.header}>{header}</Text>
-      <Text adjustsFontSizeToFit={isDuration} numberOfLines={1} style={styles.body}>
+      <Text
+        adjustsFontSizeToFit={isDuration}
+        numberOfLines={1}
+        style={isDuration ? styles.durationBody : styles.body}
+      >
         {body}
       </Text>
     </View>

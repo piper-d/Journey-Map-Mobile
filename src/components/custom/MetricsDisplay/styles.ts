@@ -17,8 +17,16 @@ export const styles = StyleSheet.create({
   body: {
     paddingTop: 5,
     color: 'white',
-    paddingLeft: 25,
+    textAlign: 'center',
     fontSize: 48,
+    left: '5%',
+    width: '90%',
+  },
+  durationBody: {
+    paddingTop: 5,
+    color: 'white',
+    paddingLeft: 25,
+    fontSize: 46,
     left: '5%',
     width: '90%',
   },
