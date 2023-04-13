@@ -39,7 +39,7 @@ export function ArchiveView({
         <>
           {isLoading && <Loader />}
 
-          {!isLoading && isInitalLoad && items === undefined && (
+          {!isLoading && items === undefined && (
             <Text style={styles.text}>
               You currently have no trips. Add a trip and return to see a summary!
             </Text>

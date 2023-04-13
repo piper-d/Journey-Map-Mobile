@@ -15,9 +15,9 @@ export const styles = StyleSheet.create({
     fontSize: 18,
   },
   body: {
-    paddingTop: 10,
+    paddingTop: 5,
     color: 'white',
-    textAlign: 'center',
+    paddingLeft: 25,
     fontSize: 48,
     left: '5%',
     width: '90%',

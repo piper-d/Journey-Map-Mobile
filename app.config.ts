@@ -22,7 +22,7 @@ export default {
     ios: {
       bundleIdentifier: 'com.JourneyMap',
       supportsTablet: true,
-      buildNumber: '10',
+      buildNumber: '12',
       infoPlist: {
         NSCameraUsageDescription: 'Your camera is used to add media to the trip.',
         NSLocationWhenInUseUsageDescription:

@@ -107,6 +107,11 @@ export function TrackingView({
     });
   };
 
+  const durationDisplay =
+    duration > 3000
+      ? `${moment.utc(duration * 1000).format('HH:mm:ss')}`
+      : `${moment.utc(duration * 1000).format('mm:ss')}`;
+
   return (
     <SafeAreaView style={styles.container}>
       <ImageBackground style={styles.image} source={image} resizeMode='cover'>
@@ -142,10 +147,7 @@ export function TrackingView({
 
         <View style={styles.metricsContainer}>
           <MetricsDisplay header={'Distance:'} body={`${Math.round(distance * 100) / 100} Mi`} />
-          <MetricsDisplay
-            header={'Duration:'}
-            body={`${moment.utc(duration * 1000).format('HH:mm:ss')}`}
-          />
+          <MetricsDisplay isDuration={true} header={'Duration:'} body={durationDisplay} />
           <MetricsDisplay header={'Current Pace:'} body={`${getCurentSpeed()}`} />
           <MetricsDisplay header={'Average Pace:'} body={`${getAverageSpeed()}`} />
         </View>

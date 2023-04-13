@@ -60,7 +60,7 @@ export const UsernameDialog = ({
             <Text style={styles.error}>{errorMessage}</Text>
           </View>
         )}
-        {isLoading && username !== undefined && <Loader />}
+        {isLoading && username !== undefined && <Loader color={'black'} style={{}} />}
         <Dialog.Button label='Cancel' onPress={() => setIsOpen(false)} />
         <Dialog.Button label='Save' onPress={() => onSave()} />
       </Dialog.Container>
